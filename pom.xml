@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.openmrs.maven.parents</groupId>
-        <artifactId>maven-parent-openmrs-module</artifactId>
-        <version>1.1.1</version>
-    </parent>
+	<parent>
+		<groupId>org.openmrs.maven.parents</groupId>
+		<artifactId>maven-parent-openmrs-module</artifactId>
+		<version>1.1.1</version>
+	</parent>
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>mksreports</artifactId>
@@ -17,16 +17,33 @@
 
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
+	<modules>
+		<module>api</module>
+		<module>omod</module>
+	</modules>
+
+	<properties>
+		<openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
+		<reportingVersion>1.12.0</reportingVersion>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-api</artifactId>
+			<version>${reportingVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
 	<scm>
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-mksreports.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-mksreports.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-mksreports/</url>
 	</scm>
 
-	<modules>
-		<module>api</module>
-		<module>omod</module>
-	</modules>
 
 	<repositories>
 		<repository>
@@ -52,7 +69,4 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-    <properties>
-        <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
-    </properties>
 </project>
