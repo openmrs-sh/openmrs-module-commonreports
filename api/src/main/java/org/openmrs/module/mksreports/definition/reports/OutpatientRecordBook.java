@@ -1,10 +1,17 @@
 package org.openmrs.module.mksreports.definition.reports;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.mksreports.MKSReportsConstants;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
@@ -20,6 +27,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OutpatientRecordBook extends BaseReportManager {
+	
+	@Autowired
+	private PatientService patientService;
 	
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
@@ -81,6 +91,15 @@ public class OutpatientRecordBook extends BaseReportManager {
 		// Patient ID
 		vdsd.addColumn("Patient ID", builtInPatientData.getPatientId(),
 		    ObjectUtil.toString(Mapped.straightThroughMappings(builtInPatientData.getPatientId()), "=", ","));
+		
+		// Patient Identifier
+		PatientIdentifierType type = patientService.getPatientIdentifierTypeByUuid(Context.getAdministrationService()
+		        .getGlobalProperty(MKSReportsConstants.GP_PATIENT_IDENTIFIER_TYPE_UUID));
+		PatientIdentifierDataDefinition pidd = new PatientIdentifierDataDefinition();
+		pidd.setTypes(Arrays.asList(type));
+		
+		vdsd.addColumn(MessageUtil.translate("${project.parent.artifactId}.report.registerLogbook.identifier.label"), pidd,
+		    ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
 		
 		rd.addDataSetDefinition("visits", Mapped.mapStraightThrough(vdsd));
 		

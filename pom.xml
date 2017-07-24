@@ -25,6 +25,7 @@
 	<properties>
 		<openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
 		<reportingVersion>1.12.0</reportingVersion>
+		<emrapiVersion>1.12</emrapiVersion>
 	</properties>
 
 	<dependencies>
