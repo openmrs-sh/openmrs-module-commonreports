@@ -9,10 +9,14 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
+import org.openmrs.module.reporting.common.Age;
+import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
@@ -102,6 +106,45 @@ public class OutpatientRecordBook extends BaseReportManager {
 		    ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
 		
 		rd.addDataSetDefinition("visits", Mapped.mapStraightThrough(vdsd));
+		
+		// Age Categories
+		AgeDataDefinition ageDD = new AgeDataDefinition();
+		
+		String isOfCategoryLabel = MessageUtil.translate("mksreports.report.registerLogbook.isOfCategory.label");
+		
+		AgeRangeConverter ageConverter1 = new AgeRangeConverter();
+		ageConverter1.addAgeRange(new AgeRange(0, Age.Unit.MONTHS, 1, Age.Unit.MONTHS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter2 = new AgeRangeConverter();
+		ageConverter2.addAgeRange(new AgeRange(1, Age.Unit.MONTHS, 12, Age.Unit.MONTHS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter3 = new AgeRangeConverter();
+		ageConverter3.addAgeRange(new AgeRange(1, Age.Unit.YEARS, 4, Age.Unit.YEARS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter4 = new AgeRangeConverter();
+		ageConverter4.addAgeRange(new AgeRange(5, Age.Unit.YEARS, 14, Age.Unit.YEARS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter5 = new AgeRangeConverter();
+		ageConverter5.addAgeRange(new AgeRange(15, Age.Unit.YEARS, 25, Age.Unit.YEARS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter6 = new AgeRangeConverter();
+		ageConverter6.addAgeRange(new AgeRange(25, Age.Unit.YEARS, 50, Age.Unit.YEARS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter7 = new AgeRangeConverter();
+		ageConverter7.addAgeRange(new AgeRange(50, Age.Unit.YEARS, 65, Age.Unit.YEARS, isOfCategoryLabel));
+		AgeRangeConverter ageConverter8 = new AgeRangeConverter();
+		ageConverter8.addAgeRange(new AgeRange(65, Age.Unit.YEARS, 999, Age.Unit.YEARS, isOfCategoryLabel));
+		
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory1.label"), ageDD, (String) null,
+		    ageConverter1);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory2.label"), ageDD, (String) null,
+		    ageConverter2);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory3.label"), ageDD, (String) null,
+		    ageConverter3);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory4.label"), ageDD, (String) null,
+		    ageConverter4);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory5.label"), ageDD, (String) null,
+		    ageConverter5);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory6.label"), ageDD, (String) null,
+		    ageConverter6);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory7.label"), ageDD, (String) null,
+		    ageConverter7);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.registerLogbook.ageCategory8.label"), ageDD, (String) null,
+		    ageConverter8);
 		
 		return rd;
 	}
