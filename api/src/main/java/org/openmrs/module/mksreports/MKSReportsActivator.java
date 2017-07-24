@@ -11,7 +11,11 @@ package org.openmrs.module.mksreports;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.reporting.report.manager.BaseReportManager;
+import org.openmrs.module.reporting.report.manager.ReportManager;
+import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -25,6 +29,10 @@ public class MKSReportsActivator extends BaseModuleActivator {
 	 */
 	public void started() {
 		log.info("Started MKS Reports");
+		for (ReportManager reportManager : Context.getRegisteredComponents(BaseReportManager.class)) {
+			log.info("Setting up report " + reportManager.getName() + "...");
+			ReportManagerUtil.setupReport(reportManager);
+		}
 	}
 	
 	/**
