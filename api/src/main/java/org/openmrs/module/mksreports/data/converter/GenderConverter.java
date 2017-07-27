@@ -18,7 +18,7 @@ import java.util.List;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 /**
- * Converter to evaluate a passed gender against a configured list of matching genders 
+ * Converter to evaluate a passed gender against a configured list of matching genders
  */
 public class GenderConverter implements DataConverter {
 	
@@ -65,8 +65,10 @@ public class GenderConverter implements DataConverter {
 	
 	/**
 	 * @see DataConverter#converter(Object)
-	 * @should return trueLabel if the gender matches one of the genders configured in the matchingGenders list
-	 * @should return falseLabel if the gender does not match one of the genders configured in the matchingGenders list
+	 * @should return trueLabel if the gender matches one of the genders configured in the
+	 *         matchingGenders list
+	 * @should return falseLabel if the gender does not match one of the genders configured in the
+	 *         matchingGenders list
 	 */
 	public Object convert(Object original) {
 		String gender = (String) original;

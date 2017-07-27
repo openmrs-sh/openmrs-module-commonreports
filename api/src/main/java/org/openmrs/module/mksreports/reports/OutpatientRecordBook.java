@@ -1,4 +1,4 @@
-package org.openmrs.module.mksreports.definition.reports;
+package org.openmrs.module.mksreports.reports;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,9 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
+import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
+import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.MessageUtil;
@@ -175,6 +177,12 @@ public class OutpatientRecordBook extends BaseReportManager {
 		    builtInPatientData.getGender(), (String) null, femaleConverter);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
 		    builtInPatientData.getGender(), (String) null, otherConverter);
+		
+		// Address and phone
+		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
+		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
+		    (String) null, addressAndPhoneConverter);
 		
 		return rd;
 	}

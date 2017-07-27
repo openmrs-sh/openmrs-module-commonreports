@@ -7,7 +7,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.mksreports</package>
-	<author>romain</author>
+	<author>Mekom Solutions</author>
 	<description>
 		${project.parent.description}
 	</description>
@@ -18,7 +18,7 @@
 	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
 	<!-- /Base Module Properties -->
 
-	<require_version>1.11.6</require_version>
+	<require_version>2.0.0</require_version>
 
 	<require_modules>
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting
@@ -33,12 +33,29 @@
 	<!-- /Internationalization -->
 
 	<globalProperty>
-		<property>mksreports.outpatientRecordBook.patientIdentfierTypeUuid</property>
+		<property>mksreports.outpatientRecordBook.patientIdentfierTypeUuid
+		</property>
 		<defaultValue>8d793bee-c2cc-11de-8d13-0010c6dffd0f</defaultValue>
 		<description>
-			The UUID of the Patient Identifier to display in the Outpatient Record Book report
+			The UUID of the Patient Identifier to display in the
+			Outpatient Record Book report
 		</description>
 	</globalProperty>
-	
+	<globalProperty>
+		<property>mksreports.phoneNumberUuid</property>
+		<defaultValue>c3bcd296-eb82-4451-a4b4-eedd1d5f322f</defaultValue>
+		<description>
+			The UUID of the phone number that would be used by MKS Reports reports
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>mksreports.2ndPhoneNumberUuid</property>
+		<defaultValue>1102f74e-ea2f-461e-b67f-db58bd136e5c</defaultValue>
+		<description>
+			The UUID of the 2nd phone number that would be used by MKS Reports
+			reports
+		</description>
+	</globalProperty>
+
 </module>
 

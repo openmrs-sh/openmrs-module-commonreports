@@ -23,7 +23,7 @@
 	</modules>
 
 	<properties>
-		<openMRSVersion>1.11.6</openMRSVersion>
+		<openMRSVersion>2.0.0</openMRSVersion>
 		<reportingVersion>1.14.0-SNAPSHOT</reportingVersion>
 		<emrapiVersion>1.12</emrapiVersion>
 		<calculationVersion>1.1</calculationVersion>
