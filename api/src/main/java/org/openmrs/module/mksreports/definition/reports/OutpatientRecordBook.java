@@ -96,14 +96,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 		BasicVisitQuery query = new BasicVisitQuery();
 		
 		Parameter endedOnOrAfter = new Parameter("endedOnOrAfter", "Ended On Or After", Date.class);
-		Parameter endedBefore = new Parameter("endedBefore", "Ended Before", Date.class);
+		Parameter endedBefore = new Parameter("endedOnOrBefore", "Ended On Or Before", Date.class);
 		query.setParameters(Arrays.asList(endedOnOrAfter, endedBefore));
 		
 		Mapped<BasicVisitQuery> mappedVQ = new Mapped<BasicVisitQuery>();
 		mappedVQ.setParameterizable(query);
 		Map<String, Object> parameterMappings = new HashMap<String, Object>();
 		parameterMappings.put("endedOnOrAfter", "${startDate}");
-		parameterMappings.put("endedBefore", "${endDate}");
+		parameterMappings.put("endedOnOrBefore", "${endDate}");
 		mappedVQ.setParameterMappings(parameterMappings);
 		
 		vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
