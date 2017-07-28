@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -43,9 +42,6 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
 	private PatientService patientService;
-	
-	@Autowired
-	private ConceptService conceptService;
 	
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
@@ -84,6 +80,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
 	}
 	
+	private Parameter getReferredFromParameter() {
+		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
+	}
+	
+	private Parameter getPastMedicalHistoryParameter() {
+		return new Parameter("pastMedicalHistory", "Past Medical History Concept", Concept.class);
+	}
+	
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
@@ -91,6 +95,8 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getEndDateParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
+		params.add(getReferredFromParameter());
+		params.add(getPastMedicalHistoryParameter());
 		return params;
 	}
 	
@@ -197,13 +203,38 @@ public class OutpatientRecordBook extends BaseReportManager {
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
 		    (String) null, addressAndPhoneConverter);
 		
-		// Symptoms (Chief complaint observation)
 		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
 		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
+		
+		// Referred From (Referred From observation)
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${referredFrom}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
+		
+		// Symptoms (Chief complaint observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${symptoms}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
+		
+		// Diagnosis (Diagnosis observation)
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${diagnosis}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
+		
+		// Other notes (Past medical history observation)
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${pastMedicalHistory}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.otherNotes.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","));
 		}
 		
