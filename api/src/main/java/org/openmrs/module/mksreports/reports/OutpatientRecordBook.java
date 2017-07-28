@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Concept;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -22,6 +24,7 @@ import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
@@ -40,6 +43,9 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	private ConceptService conceptService;
 	
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
@@ -70,11 +76,21 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
+	private Parameter getSymptomsParameter() {
+		return new Parameter("symptoms", "Symptoms Concept", Concept.class);
+	}
+	
+	private Parameter getDiagnosisParameter() {
+		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
+	}
+	
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
+		params.add(getSymptomsParameter());
+		params.add(getDiagnosisParameter());
 		return params;
 	}
 	
@@ -101,15 +117,12 @@ public class OutpatientRecordBook extends BaseReportManager {
 		Parameter endedBefore = new Parameter("endedOnOrBefore", "Ended On Or Before", Date.class);
 		query.setParameters(Arrays.asList(endedOnOrAfter, endedBefore));
 		
-		Mapped<BasicVisitQuery> mappedVQ = new Mapped<BasicVisitQuery>();
-		mappedVQ.setParameterizable(query);
-		Map<String, Object> parameterMappings = new HashMap<String, Object>();
-		parameterMappings.put("endedOnOrAfter", "${startDate}");
-		parameterMappings.put("endedOnOrBefore", "${endDate}");
-		mappedVQ.setParameterMappings(parameterMappings);
-		
-		vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
-		
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("endedOnOrAfter", "${startDate}");
+			parameterMappings.put("endedOnOrBefore", "${endDate}");
+			vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
+		}
 		// Visit ID
 		VisitDataDefinition vdd = builtInVisitData.getVisitId();
 		vdsd.addColumn("Visit ID", vdd, ObjectUtil.toString(Mapped.straightThroughMappings(vdd), "=", ","));
@@ -183,6 +196,16 @@ public class OutpatientRecordBook extends BaseReportManager {
 		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
 		    (String) null, addressAndPhoneConverter);
+		
+		// Symptoms (Chief complaint observation)
+		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
+		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${symptoms}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
 		
 		return rd;
 	}
