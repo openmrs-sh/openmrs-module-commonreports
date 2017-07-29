@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -23,6 +24,7 @@ import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
@@ -39,90 +41,95 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OutpatientRecordBook extends BaseReportManager {
-	
+
 	@Autowired
 	private PatientService patientService;
-	
+
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
-	
+
 	@Autowired
 	private BuiltInVisitDataLibrary builtInVisitData;
-	
+
 	@Override
 	public String getUuid() {
 		return "6c74e2ab-0e9b-4469-8901-8221f7d4b498";
 	}
-	
+
 	@Override
 	public String getName() {
 		return "HIS Outpatient Record Book";
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "";
 	}
-	
+
 	private Parameter getStartDateParameter() {
 		return new Parameter("startDate", "Start Date", Date.class);
 	}
-	
+
 	private Parameter getEndDateParameter() {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
-	
+
+	//	private Parameter getGuardianNameParameter() {
+	//		return new Parameter("guardian", "Guardian Person Attribute Type", PersonAttributeType.class);
+	//	}
+
 	private Parameter getSymptomsParameter() {
 		return new Parameter("symptoms", "Symptoms Concept", Concept.class);
 	}
-	
+
 	private Parameter getDiagnosisParameter() {
 		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
 	}
-	
+
 	private Parameter getReferredFromParameter() {
 		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
 	}
-	
+
 	private Parameter getPastMedicalHistoryParameter() {
 		return new Parameter("pastMedicalHistory", "Past Medical History Concept", Concept.class);
 	}
-	
+
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
+		//params.add(getGuardianNameParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
 		params.add(getReferredFromParameter());
 		params.add(getPastMedicalHistoryParameter());
 		return params;
 	}
-	
+
 	public OutpatientRecordBook() {
 	};
-	
+
 	@Override
 	public ReportDefinition constructReportDefinition() {
-		
+
 		ReportDefinition rd = new ReportDefinition();
 		rd.setUuid(getUuid());
 		rd.setName(getName());
 		rd.setDescription(getDescription());
-		
+
 		rd.setParameters(getParameters());
-		
+
 		VisitDataSetDefinition vdsd = new VisitDataSetDefinition();
 		vdsd.addParameters(getParameters());
 		rd.addDataSetDefinition("visits", Mapped.mapStraightThrough(vdsd));
-		
+
 		BasicVisitQuery query = new BasicVisitQuery();
-		
+
 		Parameter endedOnOrAfter = new Parameter("endedOnOrAfter", "Ended On Or After", Date.class);
 		Parameter endedBefore = new Parameter("endedOnOrBefore", "Ended On Or Before", Date.class);
 		query.setParameters(Arrays.asList(endedOnOrAfter, endedBefore));
-		
+
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("endedOnOrAfter", "${startDate}");
@@ -132,25 +139,45 @@ public class OutpatientRecordBook extends BaseReportManager {
 		// Visit ID
 		VisitDataDefinition vdd = builtInVisitData.getVisitId();
 		vdsd.addColumn("Visit ID", vdd, ObjectUtil.toString(Mapped.straightThroughMappings(vdd), "=", ","));
-		
+
 		// Patient ID
 		vdsd.addColumn("Patient ID", builtInPatientData.getPatientId(),
-		    ObjectUtil.toString(Mapped.straightThroughMappings(builtInPatientData.getPatientId()), "=", ","));
-		
+				ObjectUtil.toString(Mapped.straightThroughMappings(builtInPatientData.getPatientId()), "=", ","));
+
 		// Patient Identifier
 		PatientIdentifierType type = patientService.getPatientIdentifierTypeByUuid(Context.getAdministrationService()
-		        .getGlobalProperty(MKSReportsConstants.GP_PATIENT_IDENTIFIER_TYPE_UUID));
+				.getGlobalProperty(MKSReportsConstants.GP_PATIENT_IDENTIFIER_TYPE_UUID));
 		PatientIdentifierDataDefinition pidd = new PatientIdentifierDataDefinition();
 		pidd.setTypes(Arrays.asList(type));
-		
+
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), pidd,
-		    ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
-		
+				ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
+
+		// Guardian Name
+		PersonAttributeDataDefinition paDD = new PersonAttributeDataDefinition();
+		// TODO: For some reason, I am unable to set the personAttribute parameter the usual way, ie, use the setParameters()
+		// method and map it with the input param from the report (see below)
+		// Hard-coding the UUID for now.
+		// 
+		//		paDD.setParameters(Arrays.asList(new Parameter("personAttributeType", "Person Attribute Type",
+		//	        PersonAttributeType.class)));
+		//		{
+		//			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+		//			parameterMappings.put("personAttributeType", "${guardian}");
+		//			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD,
+		//			    ObjectUtil.toString(parameterMappings, "=", ","));
+		//		}
+
+		paDD.setPersonAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(
+				"14d4f066-15f5-102d-96e4-000c29c2a5d7"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD,
+				(String) null);
+
 		// Age Categories
 		AgeDataDefinition ageDD = new AgeDataDefinition();
-		
+
 		String isOfCategoryLabel = MessageUtil.translate("mksreports.report.outpatientRecordBook.isOfCategory.label");
-		
+
 		AgeRangeConverter ageConverter1 = new AgeRangeConverter();
 		ageConverter1.addAgeRange(new AgeRange(0, Age.Unit.MONTHS, 1, Age.Unit.MONTHS, isOfCategoryLabel));
 		AgeRangeConverter ageConverter2 = new AgeRangeConverter();
@@ -167,92 +194,92 @@ public class OutpatientRecordBook extends BaseReportManager {
 		ageConverter7.addAgeRange(new AgeRange(50, Age.Unit.YEARS, 65, Age.Unit.YEARS, isOfCategoryLabel));
 		AgeRangeConverter ageConverter8 = new AgeRangeConverter();
 		ageConverter8.addAgeRange(new AgeRange(65, Age.Unit.YEARS, 999, Age.Unit.YEARS, isOfCategoryLabel));
-		
+
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory1.label"), ageDD,
-		    (String) null, ageConverter1);
+				(String) null, ageConverter1);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory2.label"), ageDD,
-		    (String) null, ageConverter2);
+				(String) null, ageConverter2);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory3.label"), ageDD,
-		    (String) null, ageConverter3);
+				(String) null, ageConverter3);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory4.label"), ageDD,
-		    (String) null, ageConverter4);
+				(String) null, ageConverter4);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory5.label"), ageDD,
-		    (String) null, ageConverter5);
+				(String) null, ageConverter5);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory6.label"), ageDD,
-		    (String) null, ageConverter6);
+				(String) null, ageConverter6);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory7.label"), ageDD,
-		    (String) null, ageConverter7);
+				(String) null, ageConverter7);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.ageCategory8.label"), ageDD,
-		    (String) null, ageConverter8);
-		
+				(String) null, ageConverter8);
+
 		// Gender categories
 		GenderConverter maleConverter = new GenderConverter(Arrays.asList("M"), isOfCategoryLabel, null);
 		GenderConverter femaleConverter = new GenderConverter(Arrays.asList("F"), isOfCategoryLabel, null);
 		GenderConverter otherConverter = new GenderConverter(Arrays.asList("O"), isOfCategoryLabel, null);
-		
+
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryMale.label"),
-		    builtInPatientData.getGender(), (String) null, maleConverter);
+				builtInPatientData.getGender(), (String) null, maleConverter);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryFemale.label"),
-		    builtInPatientData.getGender(), (String) null, femaleConverter);
+				builtInPatientData.getGender(), (String) null, femaleConverter);
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
-		    builtInPatientData.getGender(), (String) null, otherConverter);
-		
+				builtInPatientData.getGender(), (String) null, otherConverter);
+
 		// Address and phone
 		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
 		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
-		    (String) null, addressAndPhoneConverter);
-		
+				(String) null, addressAndPhoneConverter);
+
 		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
 		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
-		
+
 		// Referred From (Referred From observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredFrom}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+					ObjectUtil.toString(parameterMappings, "=", ","));
 		}
-		
+
 		// Symptoms (Chief complaint observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${symptoms}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+					ObjectUtil.toString(parameterMappings, "=", ","));
 		}
-		
+
 		// Diagnosis (Diagnosis observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${diagnosis}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+					ObjectUtil.toString(parameterMappings, "=", ","));
 		}
-		
+
 		// Other notes (Past medical history observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${pastMedicalHistory}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.otherNotes.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+					ObjectUtil.toString(parameterMappings, "=", ","));
 		}
-		
+
 		return rd;
 	}
-	
+
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign design = ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c",
-		    reportDefinition);
+				reportDefinition);
 		List<ReportDesign> list = new ArrayList<ReportDesign>();
 		list.add(design);
 		return list;
 	}
-	
+
 	@Override
 	public String getVersion() {
 		return "0.1.0-SNAPSHOT";
 	}
-	
+
 }
