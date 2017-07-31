@@ -92,6 +92,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
 	}
 	
+	private Parameter getReferredToParameter() {
+		return new Parameter("referredTo", "Referred To Concept", Concept.class);
+	}
+	
 	private Parameter getPastMedicalHistoryParameter() {
 		return new Parameter("pastMedicalHistory", "Past Medical History Concept", Concept.class);
 	}
@@ -105,6 +109,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
 		params.add(getReferredFromParameter());
+		params.add(getReferredToParameter());
 		params.add(getPastMedicalHistoryParameter());
 		return params;
 	}
@@ -273,6 +278,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${diagnosis}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
+		
+		// Referred To
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${referredTo}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredTo.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","));
 		}
 		
