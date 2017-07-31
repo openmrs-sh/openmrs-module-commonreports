@@ -33,15 +33,6 @@
 	<!-- /Internationalization -->
 
 	<globalProperty>
-		<property>mksreports.outpatientRecordBook.patientIdentfierTypeUuid
-		</property>
-		<defaultValue>8d793bee-c2cc-11de-8d13-0010c6dffd0f</defaultValue>
-		<description>
-			The UUID of the Patient Identifier to display in the
-			Outpatient Record Book report
-		</description>
-	</globalProperty>
-	<globalProperty>
 		<property>mksreports.phoneNumberUuid</property>
 		<defaultValue>c3bcd296-eb82-4451-a4b4-eedd1d5f322f</defaultValue>
 		<description>
