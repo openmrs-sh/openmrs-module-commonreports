@@ -16,7 +16,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
-import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
@@ -29,7 +28,9 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.PersonToVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
@@ -78,9 +79,13 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
-	//	private Parameter getGuardianNameParameter() {
-	//		return new Parameter("guardian", "Guardian Person Attribute Type", PersonAttributeType.class);
-	//	}
+	private Parameter getGuardianNameParameter() {
+		return new Parameter("guardian", "Guardian Person Attribute Type", PersonAttributeType.class);
+	}
+	
+	private Parameter getDistanceFromHCParameter() {
+		return new Parameter("distanceFromHC", "Distance from Health Center Attribute Type", PersonAttributeType.class);
+	}
 	
 	private Parameter getSymptomsParameter() {
 		return new Parameter("symptoms", "Symptoms Concept", Concept.class);
@@ -111,7 +116,8 @@ public class OutpatientRecordBook extends BaseReportManager {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
-		//params.add(getGuardianNameParameter());
+		params.add(getGuardianNameParameter());
+		params.add(getDistanceFromHCParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
 		params.add(getWeightOnHeightParameter());
@@ -162,47 +168,41 @@ public class OutpatientRecordBook extends BaseReportManager {
 		PatientIdentifierType type = patientService
 		        .getPatientIdentifierTypeByUuid(MKSReportsConstants.PATIENT_IDENTIFIER_TYPE_UUID);
 		PatientIdentifierDataDefinition pidd = new PatientIdentifierDataDefinition();
-		pidd.setTypes(Arrays.asList(type));
+		pidd.addType(type);
 		
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), pidd,
 		    ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
 		
 		// Guardian Name
-		// TODO: For some reason, I am unable to set the personAttribute parameter the usual way, ie, use the setParameters()
-		// method and map it with the input param from the report (see below)
-		// Hard-coding the UUID for now.
-		// 
-		//		paDD.setParameters(Arrays.asList(new Parameter("personAttributeType", "Person Attribute Type",
-		//	        PersonAttributeType.class)));
-		//		{
-		//			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-		//			parameterMappings.put("personAttributeType", "${guardian}");
-		//			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD,
-		//			    ObjectUtil.toString(parameterMappings, "=", ","));
-		//		}
 		PersonAttributeDataDefinition paDD1 = new PersonAttributeDataDefinition();
-		
-		paDD1.setPersonAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(
-		    "d055d71b-1ace-47a5-87ea-249eb029b592"));
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD1,
-		    (String) null);
+		paDD1.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("personAttributeType", "${guardian}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD1,
+			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
 		
 		String isOfCategoryLabel = MessageUtil.translate("mksreports.report.outpatientRecordBook.isOfCategory.label");
 		
 		// Distance from Health Center zones
 		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
+		
 		PersonAttributeType distanceFromHCAttributeType = Context.getPersonService().getPersonAttributeTypeByUuid(
 		    MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
-		
-		paDD2.setPersonAttributeType(distanceFromHCAttributeType);
+		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
 		
 		Concept distanceFromHCConcept = Context.getConceptService().getConcept(distanceFromHCAttributeType.getForeignKey());
+		// Dynamically create the columns based on the Distance From HC concept
 		if (distanceFromHCConcept != null) {
 			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
 				Concept zone = answer.getAnswerConcept();
 				DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(Arrays.asList(zone),
 				        isOfCategoryLabel, "");
-				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2, (String) null, zoneConverter);
+				Map<String, Object> parameterMappings = new HashMap<String, Object>();
+				parameterMappings.put("personAttributeType", "${distanceFromHC}");
+				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
+				    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
 			}
 		}
 		
@@ -244,16 +244,16 @@ public class OutpatientRecordBook extends BaseReportManager {
 		    (String) null, ageConverter8);
 		
 		// Gender categories
-		GenderConverter maleConverter = new GenderConverter(Arrays.asList("M"), isOfCategoryLabel, null);
-		GenderConverter femaleConverter = new GenderConverter(Arrays.asList("F"), isOfCategoryLabel, null);
-		GenderConverter otherConverter = new GenderConverter(Arrays.asList("O"), isOfCategoryLabel, null);
-		
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryMale.label"),
-		    builtInPatientData.getGender(), (String) null, maleConverter);
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryFemale.label"),
-		    builtInPatientData.getGender(), (String) null, femaleConverter);
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
-		    builtInPatientData.getGender(), (String) null, otherConverter);
+		//		GenderConverter maleConverter = new GenderConverter(Arrays.asList("M"), isOfCategoryLabel, null);
+		//		GenderConverter femaleConverter = new GenderConverter(Arrays.asList("F"), isOfCategoryLabel, null);
+		//		GenderConverter otherConverter = new GenderConverter(Arrays.asList("O"), isOfCategoryLabel, null);
+		//		
+		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryMale.label"),
+		//		    builtInPatientData.getGender(), (String) null, maleConverter);
+		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryFemale.label"),
+		//		    builtInPatientData.getGender(), (String) null, femaleConverter);
+		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
+		//		    builtInPatientData.getGender(), (String) null, otherConverter);
 		
 		// Address and phone
 		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
