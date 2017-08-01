@@ -23,6 +23,8 @@ import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.ArithmeticOperationConverter;
+import org.openmrs.module.reporting.data.converter.ArithmeticOperationConverter.Operator;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -88,6 +90,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
 	}
 	
+	private Parameter getWeightOnHeightParameter() {
+		return new Parameter("weightOnHeight", "Weight/Height Concept", Concept.class);
+	}
+	
 	private Parameter getReferredFromParameter() {
 		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
 	}
@@ -108,6 +114,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		//params.add(getGuardianNameParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
+		params.add(getWeightOnHeightParameter());
 		params.add(getReferredFromParameter());
 		params.add(getReferredToParameter());
 		params.add(getPastMedicalHistoryParameter());
@@ -279,6 +286,16 @@ public class OutpatientRecordBook extends BaseReportManager {
 			parameterMappings.put("question", "${diagnosis}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","));
+		}
+		
+		// Nutritional Weight:Height
+		{
+			ArithmeticOperationConverter divisionConverter = new ArithmeticOperationConverter(Operator.DIVISION,
+			        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${weightOnHeight}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), divisionConverter);
 		}
 		
 		// Referred To
