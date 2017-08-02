@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports = ContactInfoDataDefinition.class)
-public class ContactInfoDataDefinitionEvaluator implements PatientDataEvaluator {
+public class ContactInfoDataEvaluator implements PatientDataEvaluator {
 	
 	@Autowired
 	PatientDataService patientDataService;

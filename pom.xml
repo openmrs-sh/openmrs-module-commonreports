@@ -25,9 +25,9 @@
 	<properties>
 		<openMRSVersion>2.0.0</openMRSVersion>
 		<reportingVersion>1.14.0-SNAPSHOT</reportingVersion>
-		<emrapiVersion>1.12</emrapiVersion>
+		<emrapiVersion>1.16</emrapiVersion>
 		<calculationVersion>1.1</calculationVersion>
-		<serialization.xstreamVersion>0.2.8</serialization.xstreamVersion>
+		<serialization.xstreamVersion>0.2.11</serialization.xstreamVersion>
 		<providermanagementVersion>2.2</providermanagementVersion>
 	</properties>
 
@@ -68,14 +68,12 @@
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
 			<version>${reportingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
 	<scm>

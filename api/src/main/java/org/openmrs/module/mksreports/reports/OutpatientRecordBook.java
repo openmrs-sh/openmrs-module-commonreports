@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
+import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
@@ -28,9 +29,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
-import org.openmrs.module.reporting.data.visit.definition.PersonToVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
@@ -244,16 +243,16 @@ public class OutpatientRecordBook extends BaseReportManager {
 		    (String) null, ageConverter8);
 		
 		// Gender categories
-		//		GenderConverter maleConverter = new GenderConverter(Arrays.asList("M"), isOfCategoryLabel, null);
-		//		GenderConverter femaleConverter = new GenderConverter(Arrays.asList("F"), isOfCategoryLabel, null);
-		//		GenderConverter otherConverter = new GenderConverter(Arrays.asList("O"), isOfCategoryLabel, null);
-		//		
-		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryMale.label"),
-		//		    builtInPatientData.getGender(), (String) null, maleConverter);
-		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryFemale.label"),
-		//		    builtInPatientData.getGender(), (String) null, femaleConverter);
-		//		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
-		//		    builtInPatientData.getGender(), (String) null, otherConverter);
+		GenderConverter maleConverter = new GenderConverter(Arrays.asList("M"), isOfCategoryLabel, null);
+		GenderConverter femaleConverter = new GenderConverter(Arrays.asList("F"), isOfCategoryLabel, null);
+		GenderConverter otherConverter = new GenderConverter(Arrays.asList("O"), isOfCategoryLabel, null);
+		
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryMale.label"),
+		    builtInPatientData.getGender(), (String) null, maleConverter);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryFemale.label"),
+		    builtInPatientData.getGender(), (String) null, femaleConverter);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
+		    builtInPatientData.getGender(), (String) null, otherConverter);
 		
 		// Address and phone
 		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
