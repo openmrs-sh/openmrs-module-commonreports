@@ -18,13 +18,13 @@ import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
+import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
-import org.openmrs.module.reporting.data.converter.ArithmeticOperationConverter;
-import org.openmrs.module.reporting.data.converter.ArithmeticOperationConverter.Operator;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -98,6 +98,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("weightOnHeight", "Weight/Height Concept", Concept.class);
 	}
 	
+	private Parameter getWeightParameter() {
+		return new Parameter("weight", "Weight Concept", Concept.class);
+	}
+	
 	private Parameter getReferredFromParameter() {
 		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
 	}
@@ -120,6 +124,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
 		params.add(getWeightOnHeightParameter());
+		params.add(getWeightParameter());
 		params.add(getReferredFromParameter());
 		params.add(getReferredToParameter());
 		params.add(getPastMedicalHistoryParameter());
@@ -288,13 +293,37 @@ public class OutpatientRecordBook extends BaseReportManager {
 		}
 		
 		// Nutritional Weight:Height
+		//		{
+		//			ArithmeticOperationConverter divisionConverter = new ArithmeticOperationConverter(Operator.DIVISION,
+		//			        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
+		//			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+		//			parameterMappings.put("question", "${weightOnHeight}");
+		//			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"), obsDD,
+		//			    ObjectUtil.toString(parameterMappings, "=", ","), divisionConverter);
+		//		}
+		
+		// Nutritional Weight/Age
 		{
-			ArithmeticOperationConverter divisionConverter = new ArithmeticOperationConverter(Operator.DIVISION,
-			        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${weightOnHeight}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), divisionConverter);
+			ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
+			obsVisitDD.setWhich(TimeQualifier.LAST);
+			obsVisitDD.addParameter(new Parameter("question", "question", Concept.class));
+			
+			AgeDataDefinition agePersonDD = new AgeDataDefinition();
+			agePersonDD.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+			{
+				Map<String, Object> parameterMappings = new HashMap<String, Object>();
+				parameterMappings.put("question", "${weight}");
+				parameterMappings.put("effectiveDate", "${endDate}");
+				
+				ObsOnAgeDataDefinition obsOnAge = new ObsOnAgeDataDefinition();
+				obsOnAge.setObsDefinition(Mapped.mapStraightThrough(obsVisitDD));
+				obsOnAge.setAgeDefinition(Mapped.mapStraightThrough(agePersonDD));
+				obsOnAge.addParameter(new Parameter("question", "Question", Concept.class));
+				obsOnAge.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+				
+				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnAge.label"), obsOnAge,
+				    ObjectUtil.toString(parameterMappings, "=", ","));
+			}
 		}
 		
 		// Referred To

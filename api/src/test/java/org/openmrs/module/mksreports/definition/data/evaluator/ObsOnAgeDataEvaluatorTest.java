@@ -15,19 +15,42 @@ package org.openmrs.module.mksreports.definition.data.evaluator;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.evaluator.ObsForPersonDataEvaluator;
+import org.openmrs.Cohort;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.VisitService;
+import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
+import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.evaluator.ObsForVisitDataEvaluator;
+import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
+@org.springframework.test.context.ContextConfiguration(locations = { "classpath:moduleApplicationContext.xml" }, inheritLocations = true)
 public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
-	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	protected static final String XML_DATASET_PATH = "";
 	
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
+	
+	@Autowired
+	VisitService visitService;
+	
+	@Autowired
+	VisitDataService visitDataService;
+	
+	@Autowired
+	ConceptService conceptService;
 	
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in
@@ -37,16 +60,38 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 	}
 	
 	/**
-	 * @see ObsForPersonDataEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
+	 * @see ObsForVisitDataEvaluator#evaluate(VisitDataDefinition,EvaluationContext)
 	 * @verifies return the obs that match the passed definition configuration
 	 */
-	@SuppressWarnings("rawtypes")
 	@Test
 	public void evaluate_shouldReturnAllObssForAllPersons() throws Exception {
+		
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		ObsOnAgeDataDefinition d = new ObsOnAgeDataDefinition();
+		
+		ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
+		obsVisitDD.setQuestion(conceptService.getConcept(5089));
+		obsVisitDD.setWhich(TimeQualifier.LAST);
+		Mapped<ObsForVisitDataDefinition> mappedObsDD = new Mapped<ObsForVisitDataDefinition>();
+		mappedObsDD.setParameterizable(obsVisitDD);
+		;
+		
+		AgeDataDefinition agePersonDD = new AgeDataDefinition();
+		agePersonDD.setEffectiveDate(DateUtil.getDateTime(2017, 7, 10));
+		Mapped<AgeDataDefinition> mappedAgeDD = new Mapped<AgeDataDefinition>();
+		mappedAgeDD.setParameterizable(agePersonDD);
+		
+		d.setObsDefinition(mappedObsDD);
+		d.setAgeDefinition(mappedAgeDD);
+		
+		EvaluatedVisitData vd = visitDataService.evaluate(d, context);
+		Assert.assertEquals(new Double(82) / new Double(42), vd.getData().get(242));
 		
 		assertTrue(true);
 		

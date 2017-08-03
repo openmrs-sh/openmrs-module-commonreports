@@ -2,11 +2,12 @@ package org.openmrs.module.mksreports.definition.data;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
-public class ObsOnAgeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class ObsOnAgeDataDefinition extends BaseDataDefinition implements VisitDataDefinition {
 	
 	/**
 	 * 
@@ -14,10 +15,10 @@ public class ObsOnAgeDataDefinition extends BaseDataDefinition implements Person
 	private static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(required = true)
-	private ObsForPersonDataDefinition obs;
+	private Mapped<? extends ObsForVisitDataDefinition> obsDefinition;
 	
 	@ConfigurationProperty(required = true)
-	private AgeDataDefinition age;
+	private Mapped<? extends AgeDataDefinition> ageDefinition;
 	
 	/**
 	 * Default Constructor
@@ -28,26 +29,26 @@ public class ObsOnAgeDataDefinition extends BaseDataDefinition implements Person
 	
 	@Override
 	public Class<?> getDataType() {
-		return Object.class;
+		return Double.class;
 	}
 	
 	/**
 	 * Getters and setters
 	 */
-	public ObsForPersonDataDefinition getObs() {
-		return obs;
+	public Mapped<? extends ObsForVisitDataDefinition> getObsDefinition() {
+		return obsDefinition;
 	}
 	
-	public void setObs(ObsForPersonDataDefinition obs) {
-		this.obs = obs;
+	public void setObsDefinition(Mapped<? extends ObsForVisitDataDefinition> obsDef) {
+		this.obsDefinition = obsDef;
 	}
 	
-	public AgeDataDefinition getAge() {
-		return age;
+	public Mapped<? extends AgeDataDefinition> getAgeDefinition() {
+		return ageDefinition;
 	}
 	
-	public void setAge(AgeDataDefinition age) {
-		this.age = age;
+	public void setAgeDefinition(Mapped<? extends AgeDataDefinition> ageDef) {
+		this.ageDefinition = ageDef;
 	}
 	
 }

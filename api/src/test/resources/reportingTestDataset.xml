@@ -53,10 +53,10 @@
 		class_id="11" is_set="false" creator="1" date_created="2008-08-15 15:52:17.0"
 		version="" uuid="7e1e06ac-d9ba-4c78-86dc-f70e1af6e777" />
 
-	<concept_name concept_id="3060" name="Distance From HC" locale="en_GB"
-		creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="3460"
-		concept_name_type="SHORT" locale_preferred="1" voided="false"
-		uuid="39d3c6dc-32f5-4749-bb01-2304bbe226bb" />
+	<concept_name concept_id="3060" name="Distance From HC"
+		locale="en_GB" creator="1" date_created="2004-08-12 00:00:00.0"
+		concept_name_id="3460" concept_name_type="SHORT" locale_preferred="1"
+		voided="false" uuid="39d3c6dc-32f5-4749-bb01-2304bbe226bb" />
 	<concept_name concept_id="3061" name="ZoneA" locale="en_GB"
 		creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="3861"
 		concept_name_type="SHORT" locale_preferred="1" voided="false"
@@ -79,6 +79,25 @@
 	<concept_answer concept_answer_id="3" concept_id="3060"
 		answer_concept="3063" creator="1" date_created="2008-08-18 12:34:58.0"
 		uuid="b82d8f8b-e929-4d41-9af9-ddfa833c58d4" />
+
+	<encounter encounter_id="101" encounter_type="1" patient_id="2"
+		visit_id="242" location_id="1" form_id="1" encounter_datetime="2017-07-07 00:00:00.0"
+		creator="1" date_created="2017-07-07 00:00:00.0" voided="false"
+		uuid="8405e878-4874-404e-9faa-8b277277f547" />
+
+	<obs obs_id="3100" person_id="2" concept_id="5089" encounter_id="101"
+		obs_datetime="2017-07-01 00:00:00.0" location_id="1" value_coded="[NULL]"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="80" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="456c5cc9-decb-4434-9f27-99ca841177f0" />
+
+	<obs obs_id="3101" person_id="2" concept_id="5089" encounter_id="101"
+		obs_datetime="2017-07-02 00:00:00.0" location_id="1" value_coded="[NULL]"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="82" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="2ba154ad-4ef3-4df0-b5e6-7d9dfb49a118" />
 
 	<obs obs_id="3017" person_id="2" concept_id="3060" encounter_id="3"
 		obs_datetime="2008-07-01 00:00:00.0" location_id="1" value_coded="3061"

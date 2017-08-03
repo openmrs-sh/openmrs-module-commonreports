@@ -105,6 +105,7 @@
 			<version>${reportingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		
 	</dependencies>
 
 
