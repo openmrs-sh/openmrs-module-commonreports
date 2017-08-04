@@ -21,6 +21,7 @@ import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition.Operator;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
+import org.openmrs.module.mksreports.definition.data.PersonNameAndAttributesDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.MessageUtil;
@@ -31,6 +32,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
@@ -80,6 +82,21 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
+	private Parameter getGivenNameLocalParameter() {
+		return new Parameter("givenNameLocal", "Given name in the local language Person Attribute Type",
+		        PersonAttributeType.class);
+	}
+	
+	private Parameter getMiddleNameLocalParameter() {
+		return new Parameter("middleNameLocal", "Middle name in the local language Person Attribute Type",
+		        PersonAttributeType.class);
+	}
+	
+	private Parameter getFamilyNameLocalParameter() {
+		return new Parameter("familyNameLocal", "Family name in the local language Person Attribute Type",
+		        PersonAttributeType.class);
+	}
+	
 	private Parameter getGuardianNameParameter() {
 		return new Parameter("guardian", "Guardian Person Attribute Type", PersonAttributeType.class);
 	}
@@ -121,6 +138,9 @@ public class OutpatientRecordBook extends BaseReportManager {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
+		params.add(getGivenNameLocalParameter());
+		params.add(getMiddleNameLocalParameter());
+		params.add(getFamilyNameLocalParameter());
 		params.add(getGuardianNameParameter());
 		params.add(getDistanceFromHCParameter());
 		params.add(getSymptomsParameter());
@@ -162,6 +182,64 @@ public class OutpatientRecordBook extends BaseReportManager {
 			parameterMappings.put("endedOnOrBefore", "${endDate}");
 			vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
 		}
+		
+		// Patient Name
+		PersonNameAndAttributesDataDefinition nameDD = new PersonNameAndAttributesDataDefinition();
+		
+		PreferredNameDataDefinition preferredNameDD = new PreferredNameDataDefinition();
+		Mapped<PreferredNameDataDefinition> mappedPreferredNameDD = new Mapped<PreferredNameDataDefinition>();
+		mappedPreferredNameDD.setParameterizable(preferredNameDD);
+		
+		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
+		// Given name local
+		PersonAttributeDataDefinition givenNameDD = new PersonAttributeDataDefinition();
+		givenNameDD.addParameter(new Parameter("personAttributeType", "Given Name Local PAT", PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedGivenNameDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedGivenNameDD.setParameterizable(givenNameDD);
+		
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("personAttributeType", "${givenNameLocal}");
+			mappedGivenNameDD.setParameterMappings(parameterMappings);
+		}
+		
+		// Middle name local
+		PersonAttributeDataDefinition middleNameDD = new PersonAttributeDataDefinition();
+		middleNameDD.addParameter(new Parameter("personAttributeType", "Middle Name Local PAT", PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedMiddleNameDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedMiddleNameDD.setParameterizable(middleNameDD);
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("personAttributeType", "${middleNameLocal}");
+			mappedMiddleNameDD.setParameterMappings(parameterMappings);
+		}
+		
+		// Family name local
+		PersonAttributeDataDefinition familyNameDD = new PersonAttributeDataDefinition();
+		familyNameDD.addParameter(new Parameter("personAttributeType", "Family Name Local PAT", PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedFamilyNameDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedFamilyNameDD.setParameterizable(familyNameDD);
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("personAttributeType", "${familyNameLocal}");
+			mappedFamilyNameDD.setParameterMappings(parameterMappings);
+		}
+		
+		List<Mapped<? extends PersonAttributeDataDefinition>> attributes = new ArrayList<Mapped<? extends PersonAttributeDataDefinition>>();
+		attributes.add(mappedGivenNameDD);
+		attributes.add(mappedMiddleNameDD);
+		attributes.add(mappedFamilyNameDD);
+		
+		nameDD.addParameter(new Parameter("givenNameLocal", "Given Name Local PAT", PersonAttributeType.class));
+		nameDD.addParameter(new Parameter("middleNameLocal", "Middle Name Local PAT", PersonAttributeType.class));
+		nameDD.addParameter(new Parameter("familyNameLocal", "Family Name Local PAT", PersonAttributeType.class));
+		
+		nameDD.setPreferredNameDefinition(mappedPreferredNameDD);
+		nameDD.setPersonAttributeDefinitions(attributes);
+		
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.patientName.label"), nameDD,
+		    ObjectUtil.toString(Mapped.straightThroughMappings(nameDD), "=", ","));
+		
 		// Visit ID
 		VisitDataDefinition vdd = builtInVisitData.getVisitId();
 		vdsd.addColumn("Visit ID", vdd, ObjectUtil.toString(Mapped.straightThroughMappings(vdd), "=", ","));
