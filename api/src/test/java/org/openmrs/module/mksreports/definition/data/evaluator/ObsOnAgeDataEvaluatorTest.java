@@ -68,10 +68,10 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	 * @verifies return the obs that match the passed definition configuration
 	 */
 	@Test
-	public void evaluate_shouldReturnAllObssForAllPersons() throws Exception {
+	public void evaluate_shouldReturnAllObsForVisit() throws Exception {
 		
 		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(new Cohort("2"));
+		context.setBaseCohort(new Cohort("7"));
 		
 		ObsOnAgeDataDefinition d = new ObsOnAgeDataDefinition();
 		
@@ -80,7 +80,6 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		obsVisitDD.setWhich(TimeQualifier.LAST);
 		Mapped<ObsForVisitDataDefinition> mappedObsDD = new Mapped<ObsForVisitDataDefinition>();
 		mappedObsDD.setParameterizable(obsVisitDD);
-		;
 		
 		AgeDataDefinition agePersonDD = new AgeDataDefinition();
 		agePersonDD.setEffectiveDate(DateUtil.getDateTime(2017, 7, 10));
@@ -91,7 +90,7 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		d.setAgeDefinition(mappedAgeDD);
 		
 		EvaluatedVisitData vd = visitDataService.evaluate(d, context);
-		Assert.assertEquals(new Double(82) / new Double(42), vd.getData().get(242));
+		Assert.assertEquals(new Double(82) / new Double(40), vd.getData().get(242));
 		
 		assertTrue(true);
 		

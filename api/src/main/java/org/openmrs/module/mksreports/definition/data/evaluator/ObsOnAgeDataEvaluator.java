@@ -39,12 +39,12 @@ public class ObsOnAgeDataEvaluator implements VisitDataEvaluator {
 	@Override
 	public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
-		ObsOnAgeDataDefinition arithmeticDD = (ObsOnAgeDataDefinition) definition;
+		ObsOnAgeDataDefinition obsOnAgeDD = (ObsOnAgeDataDefinition) definition;
 		
-		EvaluatedVisitData evaluatedVisitData = new EvaluatedVisitData(arithmeticDD, context);
+		EvaluatedVisitData evaluatedVisitData = new EvaluatedVisitData(obsOnAgeDD, context);
 		
-		EvaluatedVisitData obsData = visitDataService.evaluate(arithmeticDD.getObsDefinition(), context);
-		EvaluatedPersonData ageData = personDataService.evaluate(arithmeticDD.getAgeDefinition(), context);
+		EvaluatedVisitData obsData = visitDataService.evaluate(obsOnAgeDD.getObsDefinition(), context);
+		EvaluatedPersonData ageData = personDataService.evaluate(obsOnAgeDD.getAgeDefinition(), context);
 		
 		for (Integer vid : obsData.getData().keySet()) {
 			

@@ -17,6 +17,8 @@ import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
+import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
+import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition.Operator;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
 import org.openmrs.module.reporting.common.Age;
@@ -94,8 +96,8 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
 	}
 	
-	private Parameter getWeightOnHeightParameter() {
-		return new Parameter("weightOnHeight", "Weight/Height Concept", Concept.class);
+	private Parameter getHeightParameter() {
+		return new Parameter("height", "Height Concept", Concept.class);
 	}
 	
 	private Parameter getWeightParameter() {
@@ -123,7 +125,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getDistanceFromHCParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
-		params.add(getWeightOnHeightParameter());
+		params.add(getHeightParameter());
 		params.add(getWeightParameter());
 		params.add(getReferredFromParameter());
 		params.add(getReferredToParameter());
@@ -293,18 +295,53 @@ public class OutpatientRecordBook extends BaseReportManager {
 		}
 		
 		// Nutritional Weight:Height
-		//		{
-		//			ArithmeticOperationConverter divisionConverter = new ArithmeticOperationConverter(Operator.DIVISION,
-		//			        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
-		//			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-		//			parameterMappings.put("question", "${weightOnHeight}");
-		//			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"), obsDD,
-		//			    ObjectUtil.toString(parameterMappings, "=", ","), divisionConverter);
-		//		}
+		{
+			ObsForVisitDataDefinition weightDD = new ObsForVisitDataDefinition();
+			// Use the most recent Weight
+			weightDD.setWhich(TimeQualifier.LAST);
+			weightDD.addParameter(new Parameter("question", "Question", Concept.class));
+			Map<String, Object> weightMappings = new HashMap<String, Object>();
+			weightMappings.put("question", "${question1}");
+			Mapped<ObsForVisitDataDefinition> mappedWeightDD = new Mapped<ObsForVisitDataDefinition>();
+			mappedWeightDD.setParameterizable(weightDD);
+			mappedWeightDD.setParameterMappings(weightMappings);
+			
+			ObsForVisitDataDefinition heightDD = new ObsForVisitDataDefinition();
+			// Use the most recent Height
+			heightDD.setWhich(TimeQualifier.LAST);
+			heightDD.addParameter(new Parameter("question", "Question", Concept.class));
+			Map<String, Object> heightMappings = new HashMap<String, Object>();
+			heightMappings.put("question", "${question2}");
+			Mapped<ObsForVisitDataDefinition> mappedHeightDD = new Mapped<ObsForVisitDataDefinition>();
+			mappedHeightDD.setParameterizable(weightDD);
+			mappedHeightDD.setParameterMappings(heightMappings);
+			
+			{
+				Map<String, Object> parameterMappings = new HashMap<String, Object>();
+				parameterMappings.put("question1", "${weight}");
+				parameterMappings.put("question2", "${height}");
+				
+				CalculatedObsDataDefinition calculatedDD = new CalculatedObsDataDefinition();
+				calculatedDD.setOperator(Operator.DIVISION);
+				calculatedDD.setObsDefinition1(mappedWeightDD);
+				calculatedDD.setObsDefinition2(mappedHeightDD);
+				
+				// Adding 2 parameters on the calculatedDD in order to ensure that question1 and question2
+				// are passed to its properties 'weightDD' and 'heightDD'
+				// These parameters do not have to match an existing property of the CalculatedObsDataDefinition
+				// They are just used to pass the 'weight' and 'height' report params
+				calculatedDD.addParameter(new Parameter("question1", "Question 1", Concept.class));
+				calculatedDD.addParameter(new Parameter("question2", "Question 2", Concept.class));
+				
+				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"),
+				    calculatedDD, ObjectUtil.toString(parameterMappings, "=", ","));
+			}
+		}
 		
 		// Nutritional Weight/Age
 		{
 			ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
+			// Use the most recent Weight
 			obsVisitDD.setWhich(TimeQualifier.LAST);
 			obsVisitDD.addParameter(new Parameter("question", "question", Concept.class));
 			
