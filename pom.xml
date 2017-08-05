@@ -10,12 +10,12 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>mksreports</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>MKS Reports</name>
 	<description>Mekom Solutions reports and reporting tools for OpenMRS</description>
 
-	<url>https://wiki.openmrs.org/x/FQ4z</url>
+	<url>https://github.com/mekomsolutions/openmrs-module-mksreports</url>
 
 	<modules>
 		<module>api</module>
@@ -77,9 +77,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-mksreports.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-mksreports.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-mksreports/</url>
+		<connection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</connection>
+		<developerConnection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</developerConnection>
+		<url>https://github.com/mekomsolutions/openmrs-module-mksreports/</url>
 	</scm>
 
 
