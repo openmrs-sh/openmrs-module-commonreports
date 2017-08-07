@@ -9,9 +9,10 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
@@ -34,8 +35,6 @@ import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
-import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
-import org.openmrs.module.reporting.data.visit.library.BuiltInVisitDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -51,13 +50,16 @@ import org.springframework.stereotype.Component;
 public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
-	private PatientService patientService;
-	
-	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
 	
 	@Autowired
-	private BuiltInVisitDataLibrary builtInVisitData;
+	private PatientService patientService;
+	
+	@Autowired
+	private PersonService personService;
+
+	@Autowired
+	private ConceptService conceptService;
 	
 	@Override
 	public String getUuid() {
@@ -192,43 +194,46 @@ public class OutpatientRecordBook extends BaseReportManager {
 		
 		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
 		// Given name local
-		PersonAttributeDataDefinition givenNameDD = new PersonAttributeDataDefinition();
-		givenNameDD.addParameter(new Parameter("personAttributeType", "Given Name Local PAT", PersonAttributeType.class));
-		Mapped<PersonAttributeDataDefinition> mappedGivenNameDD = new Mapped<PersonAttributeDataDefinition>();
-		mappedGivenNameDD.setParameterizable(givenNameDD);
+		PersonAttributeDataDefinition givenNameLocalDD = new PersonAttributeDataDefinition();
+		givenNameLocalDD
+		        .addParameter(new Parameter("personAttributeType", "Given Name Local PAT", PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedGivenNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedGivenNameLocalDD.setParameterizable(givenNameLocalDD);
 		
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("personAttributeType", "${givenNameLocal}");
-			mappedGivenNameDD.setParameterMappings(parameterMappings);
+			mappedGivenNameLocalDD.setParameterMappings(parameterMappings);
 		}
 		
 		// Middle name local
-		PersonAttributeDataDefinition middleNameDD = new PersonAttributeDataDefinition();
-		middleNameDD.addParameter(new Parameter("personAttributeType", "Middle Name Local PAT", PersonAttributeType.class));
-		Mapped<PersonAttributeDataDefinition> mappedMiddleNameDD = new Mapped<PersonAttributeDataDefinition>();
-		mappedMiddleNameDD.setParameterizable(middleNameDD);
+		PersonAttributeDataDefinition middleNameLocalDD = new PersonAttributeDataDefinition();
+		middleNameLocalDD.addParameter(new Parameter("personAttributeType", "Middle Name Local PAT",
+		        PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedMiddleNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedMiddleNameLocalDD.setParameterizable(middleNameLocalDD);
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("personAttributeType", "${middleNameLocal}");
-			mappedMiddleNameDD.setParameterMappings(parameterMappings);
+			mappedMiddleNameLocalDD.setParameterMappings(parameterMappings);
 		}
 		
 		// Family name local
-		PersonAttributeDataDefinition familyNameDD = new PersonAttributeDataDefinition();
-		familyNameDD.addParameter(new Parameter("personAttributeType", "Family Name Local PAT", PersonAttributeType.class));
-		Mapped<PersonAttributeDataDefinition> mappedFamilyNameDD = new Mapped<PersonAttributeDataDefinition>();
-		mappedFamilyNameDD.setParameterizable(familyNameDD);
+		PersonAttributeDataDefinition familyNameLocalDD = new PersonAttributeDataDefinition();
+		familyNameLocalDD.addParameter(new Parameter("personAttributeType", "Family Name Local PAT",
+		        PersonAttributeType.class));
+		Mapped<PersonAttributeDataDefinition> mappedFamilyNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
+		mappedFamilyNameLocalDD.setParameterizable(familyNameLocalDD);
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("personAttributeType", "${familyNameLocal}");
-			mappedFamilyNameDD.setParameterMappings(parameterMappings);
+			mappedFamilyNameLocalDD.setParameterMappings(parameterMappings);
 		}
 		
 		List<Mapped<? extends PersonAttributeDataDefinition>> attributes = new ArrayList<Mapped<? extends PersonAttributeDataDefinition>>();
-		attributes.add(mappedGivenNameDD);
-		attributes.add(mappedMiddleNameDD);
-		attributes.add(mappedFamilyNameDD);
+		attributes.add(mappedGivenNameLocalDD);
+		attributes.add(mappedMiddleNameLocalDD);
+		attributes.add(mappedFamilyNameLocalDD);
 		
 		nameDD.addParameter(new Parameter("givenNameLocal", "Given Name Local PAT", PersonAttributeType.class));
 		nameDD.addParameter(new Parameter("middleNameLocal", "Middle Name Local PAT", PersonAttributeType.class));
@@ -240,22 +245,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.patientName.label"), nameDD,
 		    ObjectUtil.toString(Mapped.straightThroughMappings(nameDD), "=", ","));
 		
-		// Visit ID
-		VisitDataDefinition vdd = builtInVisitData.getVisitId();
-		vdsd.addColumn("Visit ID", vdd, ObjectUtil.toString(Mapped.straightThroughMappings(vdd), "=", ","));
-		
-		// Patient ID
-		vdsd.addColumn("Patient ID", builtInPatientData.getPatientId(),
-		    ObjectUtil.toString(Mapped.straightThroughMappings(builtInPatientData.getPatientId()), "=", ","));
-		
-		// Patient Identifier
-		PatientIdentifierType type = patientService
-		        .getPatientIdentifierTypeByUuid(MKSReportsConstants.PATIENT_IDENTIFIER_TYPE_UUID);
-		PatientIdentifierDataDefinition pidd = new PatientIdentifierDataDefinition();
-		pidd.addType(type);
-		
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), pidd,
-		    ObjectUtil.toString(Mapped.straightThroughMappings(pidd), "=", ","));
+		// Patient Identifiers (all)
+		PatientIdentifierDataDefinition piDD = new PatientIdentifierDataDefinition();
+		piDD.setTypes(patientService.getAllPatientIdentifierTypes());
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), piDD, (String) null);
 		
 		// Guardian Name
 		PersonAttributeDataDefinition paDD1 = new PersonAttributeDataDefinition();
@@ -272,11 +265,11 @@ public class OutpatientRecordBook extends BaseReportManager {
 		// Distance from Health Center zones
 		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
 		
-		PersonAttributeType distanceFromHCAttributeType = Context.getPersonService().getPersonAttributeTypeByUuid(
+		PersonAttributeType distanceFromHCAttributeType = personService.getPersonAttributeTypeByUuid(
 		    MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
 		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
 		
-		Concept distanceFromHCConcept = Context.getConceptService().getConcept(distanceFromHCAttributeType.getForeignKey());
+		Concept distanceFromHCConcept = conceptService.getConcept(distanceFromHCAttributeType.getForeignKey());
 		// Dynamically create the columns based on the Distance From HC concept
 		if (distanceFromHCConcept != null) {
 			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
