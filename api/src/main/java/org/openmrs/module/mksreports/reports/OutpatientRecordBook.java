@@ -11,6 +11,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -35,6 +36,7 @@ import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.ObsForVisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.OrderForVisitDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -57,9 +59,12 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
 	private PersonService personService;
-
+	
 	@Autowired
 	private ConceptService conceptService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Override
 	public String getUuid() {
@@ -265,8 +270,8 @@ public class OutpatientRecordBook extends BaseReportManager {
 		// Distance from Health Center zones
 		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
 		
-		PersonAttributeType distanceFromHCAttributeType = personService.getPersonAttributeTypeByUuid(
-		    MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
+		PersonAttributeType distanceFromHCAttributeType = personService
+		        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
 		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
 		
 		Concept distanceFromHCConcept = conceptService.getConcept(distanceFromHCAttributeType.getForeignKey());
@@ -364,6 +369,12 @@ public class OutpatientRecordBook extends BaseReportManager {
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","));
 		}
+		
+		// Treatment (Orders)
+		OrderForVisitDataDefinition orderDD = new OrderForVisitDataDefinition();
+		
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
+		    (String) null);
 		
 		// Nutritional Weight:Height
 		{
