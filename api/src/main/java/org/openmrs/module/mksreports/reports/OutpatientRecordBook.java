@@ -19,6 +19,7 @@ import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
+import org.openmrs.module.mksreports.data.converter.OrderConverter;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition.Operator;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
@@ -372,9 +373,9 @@ public class OutpatientRecordBook extends BaseReportManager {
 		
 		// Treatment (Orders)
 		OrderForVisitDataDefinition orderDD = new OrderForVisitDataDefinition();
-		
+		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(MKSReportsConstants.DRUG_ORDER_TYPE_UUID)));
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
-		    (String) null);
+		    (String) null, new OrderConverter());
 		
 		// Nutritional Weight:Height
 		{

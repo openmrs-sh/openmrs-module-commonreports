@@ -37,5 +37,5 @@ public class MKSReportsConstants {
 	 */
 	public static final String DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID = "1df3e8c6-564e-4da9-9094-5d36f68100c9";
 	
-	public static final String PATIENT_IDENTIFIER_TYPE_UUID = "8d793bee-c2cc-11de-8d13-0010c6dffd0f";
+	public static final String DRUG_ORDER_TYPE_UUID = "131168f4-15f5-102d-96e4-000c29c2a5d7";
 }
