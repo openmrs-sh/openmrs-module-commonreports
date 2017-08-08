@@ -24,6 +24,7 @@ import org.openmrs.module.mksreports.data.converter.RoundNumber;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition.Operator;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
+import org.openmrs.module.mksreports.definition.data.IMCIProgramDataDefinition;
 import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
 import org.openmrs.module.mksreports.definition.data.PersonNameAndAttributesDataDefinition;
 import org.openmrs.module.reporting.common.Age;
@@ -378,6 +379,11 @@ public class OutpatientRecordBook extends BaseReportManager {
 		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(MKSReportsConstants.DRUG_ORDER_TYPE_UUID)));
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
 		    (String) null, new OrderConverter());
+		
+		// IMCI program started
+		IMCIProgramDataDefinition imciDD = new IMCIProgramDataDefinition();
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.imciProgram.label"), imciDD,
+		    (String) null);
 		
 		// Nutritional Weight:Height
 		{
