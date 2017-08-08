@@ -20,6 +20,7 @@ import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.data.converter.OrderConverter;
+import org.openmrs.module.mksreports.data.converter.RoundNumber;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition.Operator;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
@@ -417,7 +418,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 				calculatedDD.addParameter(new Parameter("question2", "Question 2", Concept.class));
 				
 				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"),
-				    calculatedDD, ObjectUtil.toString(parameterMappings, "=", ","));
+				    calculatedDD, ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
 			}
 		}
 		
@@ -442,7 +443,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 				obsOnAge.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 				
 				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnAge.label"), obsOnAge,
-				    ObjectUtil.toString(parameterMappings, "=", ","));
+				    ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
 			}
 		}
 		
