@@ -32,6 +32,7 @@ import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.ObsValueConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -353,7 +354,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredFrom}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
 		}
 		
 		// Symptoms (Chief complaint observation)
@@ -361,7 +362,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${symptoms}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
 		}
 		
 		// Diagnosis (Diagnosis observation)
@@ -369,7 +370,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${diagnosis}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
 		}
 		
 		// Treatment (Orders)
