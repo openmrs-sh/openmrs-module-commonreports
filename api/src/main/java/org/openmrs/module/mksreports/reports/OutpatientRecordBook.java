@@ -19,6 +19,7 @@ import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
+import org.openmrs.module.mksreports.data.converter.NullToNAConverter;
 import org.openmrs.module.mksreports.data.converter.OrderConverter;
 import org.openmrs.module.mksreports.data.converter.RoundNumber;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
@@ -380,10 +381,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
 		    (String) null, new OrderConverter());
 		
+		NullToNAConverter nullToNAConverter = new NullToNAConverter(
+		        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
+		
 		// IMCI program started
+		// TODO: Currently the IMCI program is not implemented. Returning "N/A" in each cell 
 		IMCIProgramDataDefinition imciDD = new IMCIProgramDataDefinition();
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.imciProgram.label"), imciDD,
-		    (String) null);
+		    (String) null, nullToNAConverter);
 		
 		// Nutritional Weight:Height
 		{
