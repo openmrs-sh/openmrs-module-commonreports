@@ -17,6 +17,7 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
+import org.openmrs.module.mksreports.data.converter.CodedToShortNameConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.data.converter.NullToNAConverter;
@@ -145,6 +146,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("referredTo", "Referred To Concept", Concept.class);
 	}
 	
+	private Parameter getPaymentTypeParameter() {
+		return new Parameter("paymentType", "Payment Type Concept", Concept.class);
+	}
+	
 	private Parameter getPastMedicalHistoryParameter() {
 		return new Parameter("pastMedicalHistory", "Past Medical History Concept", Concept.class);
 	}
@@ -166,6 +171,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getWeightParameter());
 		params.add(getReferredFromParameter());
 		params.add(getReferredToParameter());
+		params.add(getPaymentTypeParameter());
 		params.add(getPastMedicalHistoryParameter());
 		return params;
 	}
@@ -477,7 +483,15 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredTo}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredTo.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+		}
+		
+		// Payment Type
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${paymentType}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.paymentType.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), new CodedToShortNameConverter());
 		}
 		
 		// Other notes (Past medical history observation)
