@@ -362,12 +362,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
 		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
 		
+		ObsValueConverter obsValueConverter = new ObsValueConverter();
+		
 		// Referred From (Referred From observation)
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredFrom}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		// Gestational Age
@@ -375,7 +377,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${gestation}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.gestationalAge.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		// Symptoms (Chief complaint observation)
@@ -383,7 +385,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${symptoms}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		// Diagnosis (Diagnosis observation)
@@ -391,7 +393,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${diagnosis}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		// Treatment (Orders)
@@ -483,7 +485,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredTo}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredTo.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		// Payment Type
@@ -499,7 +501,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${pastMedicalHistory}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.otherNotes.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
 		return rd;
