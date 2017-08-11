@@ -206,6 +206,11 @@ public class OutpatientRecordBook extends BaseReportManager {
 			vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
 		}
 		
+		// Patient Identifiers (all)
+		PatientIdentifierDataDefinition piDD = new PatientIdentifierDataDefinition();
+		piDD.setTypes(patientService.getAllPatientIdentifierTypes());
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), piDD, (String) null);
+		
 		// Patient Name
 		PersonNameAndAttributesDataDefinition nameDD = new PersonNameAndAttributesDataDefinition();
 		
@@ -266,11 +271,6 @@ public class OutpatientRecordBook extends BaseReportManager {
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.patientName.label"), nameDD,
 		    ObjectUtil.toString(Mapped.straightThroughMappings(nameDD), "=", ","));
 		
-		// Patient Identifiers (all)
-		PatientIdentifierDataDefinition piDD = new PatientIdentifierDataDefinition();
-		piDD.setTypes(patientService.getAllPatientIdentifierTypes());
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), piDD, (String) null);
-		
 		// Guardian Name
 		PersonAttributeDataDefinition paDD1 = new PersonAttributeDataDefinition();
 		paDD1.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
@@ -282,27 +282,6 @@ public class OutpatientRecordBook extends BaseReportManager {
 		}
 		
 		String isOfCategoryLabel = MessageUtil.translate("mksreports.report.outpatientRecordBook.isOfCategory.label");
-		
-		// Distance from Health Center zones
-		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
-		
-		PersonAttributeType distanceFromHCAttributeType = personService
-		        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
-		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
-		
-		Concept distanceFromHCConcept = conceptService.getConcept(distanceFromHCAttributeType.getForeignKey());
-		// Dynamically create the columns based on the Distance From HC concept
-		if (distanceFromHCConcept != null) {
-			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
-				Concept zone = answer.getAnswerConcept();
-				DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(Arrays.asList(zone),
-				        isOfCategoryLabel, "");
-				Map<String, Object> parameterMappings = new HashMap<String, Object>();
-				parameterMappings.put("personAttributeType", "${distanceFromHC}");
-				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
-				    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
-			}
-		}
 		
 		// Age Categories
 		AgeDataDefinition ageDD = new AgeDataDefinition();
@@ -353,30 +332,51 @@ public class OutpatientRecordBook extends BaseReportManager {
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.genderCategoryOther.label"),
 		    builtInPatientData.getGender(), (String) null, otherConverter);
 		
-		// Address and phone
-		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
-		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
-		    (String) null, addressAndPhoneConverter);
+		// Distance from Health Center zones
+		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
+		
+		PersonAttributeType distanceFromHCAttributeType = personService
+		        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
+		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
+		
+		Concept distanceFromHCConcept = conceptService.getConcept(distanceFromHCAttributeType.getForeignKey());
+		// Dynamically create the columns based on the Distance From HC concept
+		if (distanceFromHCConcept != null) {
+			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
+				Concept zone = answer.getAnswerConcept();
+				DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(Arrays.asList(zone),
+				        isOfCategoryLabel, "");
+				Map<String, Object> parameterMappings = new HashMap<String, Object>();
+				parameterMappings.put("personAttributeType", "${distanceFromHC}");
+				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
+				    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
+			}
+		}
 		
 		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
 		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
 		
 		ObsValueConverter obsValueConverter = new ObsValueConverter();
 		
-		// Referred From (Referred From observation)
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${referredFrom}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
-		}
-		
 		// Gestational Age
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${gestation}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.gestationalAge.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
+		}
+		
+		// Address and phone
+		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
+		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
+		    (String) null, addressAndPhoneConverter);
+		
+		// Referred From (Referred From observation)
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${referredFrom}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
 		}
 		
@@ -410,6 +410,31 @@ public class OutpatientRecordBook extends BaseReportManager {
 		IMCIProgramDataDefinition imciDD = new IMCIProgramDataDefinition();
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.imciProgram.label"), imciDD,
 		    (String) null, nullToNAConverter);
+		
+		// Nutritional Weight/Age
+		{
+			ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
+			// Use the most recent Weight
+			obsVisitDD.setWhich(TimeQualifier.LAST);
+			obsVisitDD.addParameter(new Parameter("question", "question", Concept.class));
+			
+			AgeDataDefinition agePersonDD = new AgeDataDefinition();
+			agePersonDD.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+			{
+				Map<String, Object> parameterMappings = new HashMap<String, Object>();
+				parameterMappings.put("question", "${weight}");
+				parameterMappings.put("effectiveDate", "${endDate}");
+				
+				ObsOnAgeDataDefinition obsOnAge = new ObsOnAgeDataDefinition();
+				obsOnAge.setObsDefinition(Mapped.mapStraightThrough(obsVisitDD));
+				obsOnAge.setAgeDefinition(Mapped.mapStraightThrough(agePersonDD));
+				obsOnAge.addParameter(new Parameter("question", "Question", Concept.class));
+				obsOnAge.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+				
+				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnAge.label"), obsOnAge,
+				    ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
+			}
+		}
 		
 		// Nutritional Weight:Height
 		{
@@ -452,31 +477,6 @@ public class OutpatientRecordBook extends BaseReportManager {
 				
 				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"),
 				    calculatedDD, ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
-			}
-		}
-		
-		// Nutritional Weight/Age
-		{
-			ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
-			// Use the most recent Weight
-			obsVisitDD.setWhich(TimeQualifier.LAST);
-			obsVisitDD.addParameter(new Parameter("question", "question", Concept.class));
-			
-			AgeDataDefinition agePersonDD = new AgeDataDefinition();
-			agePersonDD.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-			{
-				Map<String, Object> parameterMappings = new HashMap<String, Object>();
-				parameterMappings.put("question", "${weight}");
-				parameterMappings.put("effectiveDate", "${endDate}");
-				
-				ObsOnAgeDataDefinition obsOnAge = new ObsOnAgeDataDefinition();
-				obsOnAge.setObsDefinition(Mapped.mapStraightThrough(obsVisitDD));
-				obsOnAge.setAgeDefinition(Mapped.mapStraightThrough(agePersonDD));
-				obsOnAge.addParameter(new Parameter("question", "Question", Concept.class));
-				obsOnAge.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-				
-				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnAge.label"), obsOnAge,
-				    ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
 			}
 		}
 		
