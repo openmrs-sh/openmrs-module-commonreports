@@ -117,6 +117,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("distanceFromHC", "Distance from Health Center Attribute Type", PersonAttributeType.class);
 	}
 	
+	private Parameter getGestationParameter() {
+		return new Parameter("gestation", "Gestational Age Concept", Concept.class);
+	}
+	
 	private Parameter getSymptomsParameter() {
 		return new Parameter("symptoms", "Symptoms Concept", Concept.class);
 	}
@@ -155,6 +159,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getFamilyNameLocalParameter());
 		params.add(getGuardianNameParameter());
 		params.add(getDistanceFromHCParameter());
+		params.add(getGestationParameter());
 		params.add(getSymptomsParameter());
 		params.add(getDiagnosisParameter());
 		params.add(getHeightParameter());
@@ -356,6 +361,14 @@ public class OutpatientRecordBook extends BaseReportManager {
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("question", "${referredFrom}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
+		}
+		
+		// Gestational Age
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${gestation}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.gestationalAge.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","), new ObsValueConverter());
 		}
 		
