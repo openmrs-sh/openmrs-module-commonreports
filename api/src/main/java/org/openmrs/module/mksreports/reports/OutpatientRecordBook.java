@@ -21,6 +21,7 @@ import org.openmrs.module.mksreports.data.converter.CodedToShortNameConverter;
 import org.openmrs.module.mksreports.data.converter.DistanceFromHealthCenterConverter;
 import org.openmrs.module.mksreports.data.converter.GenderConverter;
 import org.openmrs.module.mksreports.data.converter.NullToNAConverter;
+import org.openmrs.module.mksreports.data.converter.ObsBooleanConverter;
 import org.openmrs.module.mksreports.data.converter.OrderConverter;
 import org.openmrs.module.mksreports.data.converter.RoundNumber;
 import org.openmrs.module.mksreports.definition.data.CalculatedObsDataDefinition;
@@ -142,6 +143,10 @@ public class OutpatientRecordBook extends BaseReportManager {
 		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
 	}
 	
+	private Parameter getOldCaseParameter() {
+		return new Parameter("oldCase", "Old Case Concept", Concept.class);
+	}
+	
 	private Parameter getReferredToParameter() {
 		return new Parameter("referredTo", "Referred To Concept", Concept.class);
 	}
@@ -170,6 +175,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getHeightParameter());
 		params.add(getWeightParameter());
 		params.add(getReferredFromParameter());
+		params.add(getOldCaseParameter());
 		params.add(getReferredToParameter());
 		params.add(getPaymentTypeParameter());
 		params.add(getPastMedicalHistoryParameter());
@@ -378,6 +384,19 @@ public class OutpatientRecordBook extends BaseReportManager {
 			parameterMappings.put("question", "${referredFrom}");
 			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
 			    ObjectUtil.toString(parameterMappings, "=", ","), obsValueConverter);
+		}
+		
+		// New Case/Old Case categories
+		ObsBooleanConverter trueConverter = new ObsBooleanConverter("", isOfCategoryLabel);
+		ObsBooleanConverter falseConverter = new ObsBooleanConverter(isOfCategoryLabel, "");
+		
+		{
+			Map<String, Object> parameterMappings = new HashMap<String, Object>();
+			parameterMappings.put("question", "${oldCase}");
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.newCase.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), trueConverter);
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.oldCase.label"), obsDD,
+			    ObjectUtil.toString(parameterMappings, "=", ","), falseConverter);
 		}
 		
 		// Symptoms (Chief complaint observation)
