@@ -43,15 +43,15 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 		OrderConverter converter = new OrderConverter();
 		
 		{
-			String formattedOrders = (String) converter.convert(orders);
-			assertEquals("ASPIRIN, Triomune-30, Triomune-30", formattedOrders);
+			String formattedOrders = (String) converter.convert(orders.get(0));
+			assertEquals("ASPIRIN", formattedOrders);
 		}
 		
 		// add a non drug order
 		orders.add(orderService.getOrder(6));
 		{
-			String formattedOrders = (String) converter.convert(orders);
-			assertEquals("ASPIRIN, Triomune-30, Triomune-30, CD4 COUNT", formattedOrders);
+			String formattedOrders = (String) converter.convert(orders.get(3));
+			assertEquals("CD4 COUNT", formattedOrders);
 		}
 	}
 	

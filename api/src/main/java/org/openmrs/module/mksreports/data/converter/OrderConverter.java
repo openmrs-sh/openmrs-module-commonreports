@@ -31,26 +31,20 @@ public class OrderConverter implements DataConverter {
 	@Override
 	public Object convert(Object original) {
 		
-		List<Order> orders = (List<Order>) original;
-		
-		String formattedOrders = "";
-		if (orders != null) {
-			for (Order order : orders) {
-				String formattedOrder = "";
-				if (order instanceof DrugOrder) {
-					DrugOrder drugOrder = (DrugOrder) order;
-					String drugName = (drugOrder.isNonCodedDrug() ? drugOrder.getDrugNonCoded()
-					        : (drugOrder.getDrug() != null ? drugOrder.getDrug().getName() : "[no drug]"));
-					formattedOrder = drugName;
-				} else {
-					formattedOrder = (order.getConcept().getName(Context.getLocale()).getName());
-				}
-				formattedOrders = formattedOrders.equals("") ? formattedOrder : formattedOrders + ", " + formattedOrder;
+		String formattedOrder = "";
+		if (original != null) {
+			Order order = (Order) original;
+			if (order instanceof DrugOrder) {
+				DrugOrder drugOrder = (DrugOrder) order;
+				String drugName = (drugOrder.isNonCodedDrug() ? drugOrder.getDrugNonCoded()
+				        : (drugOrder.getDrug() != null ? drugOrder.getDrug().getName() : "[no drug]"));
+				formattedOrder = drugName;
+			} else {
+				formattedOrder = (order.getConcept().getName(Context.getLocale()).getName());
 			}
-			return formattedOrders;
-		} else {
-			return null;
+			return formattedOrder;
 		}
+		return null;
 	}
 	
 	@Override

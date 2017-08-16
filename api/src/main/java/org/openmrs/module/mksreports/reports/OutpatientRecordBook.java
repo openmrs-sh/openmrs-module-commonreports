@@ -420,7 +420,7 @@ public class OutpatientRecordBook extends BaseReportManager {
 		OrderForVisitDataDefinition orderDD = new OrderForVisitDataDefinition();
 		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(MKSReportsConstants.DRUG_ORDER_TYPE_UUID)));
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
-		    (String) null, new OrderConverter());
+		    (String) null, new CollectionConverter(new OrderConverter(), false, null));
 		
 		NullToNAConverter nullToNAConverter = new NullToNAConverter(
 		        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
