@@ -10,7 +10,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>mksreports</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>MKS Reports</name>
 	<description>Mekom Solutions reports and reporting tools for OpenMRS</description>
