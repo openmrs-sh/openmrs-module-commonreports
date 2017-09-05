@@ -3,20 +3,14 @@ package org.openmrs.module.mksreports.definition.data.converter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.mksreports.data.converter.RoundNumber;
 
-@org.springframework.test.context.ContextConfiguration(locations = { "classpath:moduleApplicationContext.xml" }, inheritLocations = true)
 public class RoundNumberTest {
 	
 	protected static final String XML_DATASET_PATH = "";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
-	
-	@Before
-	public void setUp() throws Exception {
-	}
 	
 	@Test
 	public void convert_shouldReturnRoundedNumber() {
@@ -38,7 +32,6 @@ public class RoundNumberTest {
 		rounder5.setDecimals(5);
 		
 		assertEquals(new Double(1234.05176), (Double) rounder5.convert("1234.0517609876987"));
-		
 	}
 	
 	@Test
@@ -46,7 +39,5 @@ public class RoundNumberTest {
 		
 		RoundNumber rounder = new RoundNumber();
 		assertNull(rounder.convert(null));
-		
 	}
-	
 }

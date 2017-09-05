@@ -13,17 +13,14 @@
  */
 package org.openmrs.module.mksreports.definition.data.evaluator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
@@ -38,12 +35,10 @@ import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefi
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@org.springframework.test.context.ContextConfiguration(locations = { "classpath:moduleApplicationContext.xml" }, inheritLocations = true)
 public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "";
@@ -51,25 +46,25 @@ public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextS
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
 	
 	@Autowired
-	VisitService visitService;
+	private VisitService visitService;
 	
 	@Autowired
-	PersonService personService;
+	private PersonService personService;
 	
 	@Autowired
-	EncounterService encounterService;
+	private EncounterService encounterService;
 	
 	@Autowired
-	PatientService patientService;
+	private PatientService patientService;
 	
 	@Autowired
-	PersonDataService personDataService;
+	private PersonDataService personDataService;
 	
 	@Autowired
-	ConceptService conceptService;
+	private ConceptService conceptService;
 	
 	@Autowired
-	ObsService obsService;
+	private ObsService obsService;
 	
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in

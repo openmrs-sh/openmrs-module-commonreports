@@ -21,7 +21,11 @@
 	<require_version>2.0.0</require_version>
 
 	<require_modules>
-		<require_module version="${reportingVersion}">org.openmrs.module.reporting
+		<require_module version="${reportingVersion}">
+			org.openmrs.module.reporting
+		</require_module>
+		<require_module version="${initializerVersion}">
+			org.openmrs.module.initializer
 		</require_module>
 	</require_modules>
 	<!-- Internationalization -->

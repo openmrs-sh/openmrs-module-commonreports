@@ -14,7 +14,6 @@ import org.openmrs.module.mksreports.data.converter.OrderConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@org.springframework.test.context.ContextConfiguration(locations = { "classpath:moduleApplicationContext.xml" }, inheritLocations = true)
 public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "";
@@ -22,7 +21,7 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
 	
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 	
 	private List<Order> orders;
 	
@@ -34,7 +33,6 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 		orders.add(orderService.getOrder(1));
 		orders.add(orderService.getOrder(2));
 		orders.add(orderService.getOrder(3));
-		
 	}
 	
 	@Test
@@ -61,5 +59,4 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 		OrderConverter converter = new OrderConverter();
 		assertNull(converter.convert(null));
 	}
-	
 }

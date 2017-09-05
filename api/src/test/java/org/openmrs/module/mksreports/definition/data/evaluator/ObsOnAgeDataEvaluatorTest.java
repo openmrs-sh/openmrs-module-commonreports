@@ -36,7 +36,6 @@ import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@org.springframework.test.context.ContextConfiguration(locations = { "classpath:moduleApplicationContext.xml" }, inheritLocations = true)
 public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "";
@@ -44,13 +43,13 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
 	
 	@Autowired
-	VisitService visitService;
+	private VisitService visitService;
 	
 	@Autowired
-	VisitDataService visitDataService;
+	private VisitDataService visitDataService;
 	
 	@Autowired
-	ConceptService conceptService;
+	private ConceptService conceptService;
 	
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in
@@ -93,7 +92,5 @@ public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(new Double(82) / new Double(40), vd.getData().get(242));
 		
 		assertTrue(true);
-		
 	}
-	
 }

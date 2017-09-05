@@ -29,6 +29,8 @@
 		<calculationVersion>1.1</calculationVersion>
 		<serialization.xstreamVersion>0.2.11</serialization.xstreamVersion>
 		<providermanagementVersion>2.2</providermanagementVersion>
+		<idgenVersion>4.3</idgenVersion>
+		<initializerVersion>1.0.1-SNAPSHOT</initializerVersion>
 	</properties>
 
 	<dependencies>
@@ -72,6 +74,18 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
 			<version>${reportingVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>idgen-api</artifactId>
+			<version>${idgenVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>initializer-api</artifactId>
+			<version>${initializerVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

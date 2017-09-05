@@ -15,6 +15,7 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.CodedToShortNameConverter;
@@ -56,7 +57,7 @@ import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDRECBOOK)
 public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
@@ -73,6 +74,9 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private InitializerService inizService;
 	
 	@Override
 	public String getUuid() {
@@ -341,22 +345,25 @@ public class OutpatientRecordBook extends BaseReportManager {
 		
 		// Distance from Health Center zones
 		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
-		
-		PersonAttributeType distanceFromHCAttributeType = personService
-		        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
-		paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
-		
-		Concept distanceFromHCConcept = conceptService.getConcept(distanceFromHCAttributeType.getForeignKey());
-		// Dynamically create the columns based on the Distance From HC concept
-		if (distanceFromHCConcept != null) {
-			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
-				Concept zone = answer.getAnswerConcept();
-				DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(Arrays.asList(zone),
-				        isOfCategoryLabel, "");
-				Map<String, Object> parameterMappings = new HashMap<String, Object>();
-				parameterMappings.put("personAttributeType", "${distanceFromHC}");
-				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
-				    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
+		{
+			PersonAttributeType defaultPat = personService
+			        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
+			PersonAttributeType configPat = inizService.getPersonAttributeTypeFromKey(
+			    "report.opdrecbook.distancehc.pat.uuid", defaultPat);
+			paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
+			
+			Concept distanceFromHCConcept = conceptService.getConcept(configPat.getForeignKey());
+			// Dynamically create the columns based on the Distance From HC concept
+			if (distanceFromHCConcept != null) {
+				for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
+					Concept zone = answer.getAnswerConcept();
+					DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(
+					        Arrays.asList(zone), isOfCategoryLabel, "");
+					Map<String, Object> parameterMappings = new HashMap<String, Object>();
+					parameterMappings.put("personAttributeType", "${distanceFromHC}");
+					vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
+					    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
+				}
 			}
 		}
 		
