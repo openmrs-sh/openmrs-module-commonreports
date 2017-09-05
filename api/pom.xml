@@ -18,6 +18,8 @@
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
 			<version>${openMRSVersion}</version>
+			<scope>provided</scope>
+			<type>jar</type>
 			<exclusions>
 				<exclusion>
 					<artifactId>javassist</artifactId>
@@ -29,7 +31,8 @@
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
 			<version>${openMRSVersion}</version>
-			<classifier>tests</classifier>
+			<type>test-jar</type>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>javassist</artifactId>
@@ -42,6 +45,7 @@
 			<artifactId>openmrs-test</artifactId>
 			<version>${openMRSVersion}</version>
 			<type>pom</type>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>javassist</artifactId>
@@ -53,16 +57,25 @@
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
 			<version>${openMRSVersion}</version>
+			<scope>provided</scope>
+			<type>jar</type>
 		</dependency>
 
 		<!-- End OpenMRS core -->
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>emrapi-api</artifactId>
-			<version>${emrapiVersion}</version>
+			<artifactId>reporting-api</artifactId>
+			<version>${reportingVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>emrapi-api</artifactId>
+			<version>${emrapiVersion}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>emrapi-api-1.12</artifactId>
@@ -74,14 +87,15 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>calculation-api</artifactId>
 			<version>${calculationVersion}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api</artifactId>
 			<version>${serialization.xstreamVersion}</version>
+			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-2.0</artifactId>
@@ -93,12 +107,14 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>providermanagement-api</artifactId>
 			<version>${providermanagementVersion}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
 			<version>${reportingVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
@@ -111,15 +127,16 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>idgen-api</artifactId>
 			<version>${idgenVersion}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>initializer-api</artifactId>
 			<version>${initializerVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
-
 
 </project>

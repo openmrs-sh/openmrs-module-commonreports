@@ -15,7 +15,22 @@
 	<name>MKS Reports</name>
 	<description>Mekom Solutions reports and reporting tools for OpenMRS</description>
 
-	<url>https://github.com/mekomsolutions/openmrs-module-mksreports</url>
+	<developers>
+		<developer>
+			<name>Mekom Solutions</name>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Mekom Solutions</name>
+		<url>http://www.mekomsolutions.com</url>
+	</organization>
+
+	<scm>
+		<connection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</connection>
+		<developerConnection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</developerConnection>
+		<url>https://github.com/mekomsolutions/openmrs-module-mksreports/</url>
+	</scm>
 
 	<modules>
 		<module>api</module>
@@ -32,70 +47,6 @@
 		<idgenVersion>4.3</idgenVersion>
 		<initializerVersion>1.0.1-SNAPSHOT</initializerVersion>
 	</properties>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>org.openmrs.api</groupId>
-			<artifactId>openmrs-api</artifactId>
-			<version>${openMRSVersion}</version>
-			<scope>provided</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.web</groupId>
-			<artifactId>openmrs-web</artifactId>
-			<version>${openMRSVersion}</version>
-			<scope>provided</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.api</groupId>
-			<artifactId>openmrs-api</artifactId>
-			<version>${openMRSVersion}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.web</groupId>
-			<artifactId>openmrs-web</artifactId>
-			<version>${openMRSVersion}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.test</groupId>
-			<artifactId>openmrs-test</artifactId>
-			<version>${openMRSVersion}</version>
-			<type>pom</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting-api</artifactId>
-			<version>${reportingVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>idgen-api</artifactId>
-			<version>${idgenVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>initializer-api</artifactId>
-			<version>${initializerVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
-	<scm>
-		<connection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</connection>
-		<developerConnection>scm:git:git@github.com:mekomsolutions/openmrs-module-mksreports.git</developerConnection>
-		<url>https://github.com/mekomsolutions/openmrs-module-mksreports/</url>
-	</scm>
-
 
 	<repositories>
 		<repository>
