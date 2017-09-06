@@ -16,6 +16,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.initializer.api.InitializerService;
+import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
 import org.openmrs.module.mksreports.data.converter.AddressAndPhoneConverter;
 import org.openmrs.module.mksreports.data.converter.CodedToShortNameConverter;
@@ -52,13 +53,12 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.visit.definition.BasicVisitQuery;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.manager.BaseReportManager;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDRECBOOK)
-public class OutpatientRecordBook extends BaseReportManager {
+public class OutpatientRecordBook extends MKSReportManager {
 	
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
@@ -77,6 +77,11 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Autowired
 	private InitializerService inizService;
+	
+	@Override
+	public boolean isActive() {
+		return inizService.getBooleanFromKey("report.opdrecbook.active", true);
+	}
 	
 	@Override
 	public String getUuid() {
@@ -185,9 +190,6 @@ public class OutpatientRecordBook extends BaseReportManager {
 		params.add(getPaymentTypeParameter());
 		params.add(getPastMedicalHistoryParameter());
 		return params;
-	}
-	
-	public OutpatientRecordBook() {
 	}
 	
 	@Override
@@ -536,16 +538,12 @@ public class OutpatientRecordBook extends BaseReportManager {
 	
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-		ReportDesign design = ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c",
-		    reportDefinition);
-		List<ReportDesign> list = new ArrayList<ReportDesign>();
-		list.add(design);
-		return list;
+		return Arrays.asList(ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c",
+		    reportDefinition));
 	}
 	
 	@Override
 	public String getVersion() {
 		return "0.1.0-SNAPSHOT";
 	}
-	
 }

@@ -13,8 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.reporting.report.manager.BaseReportManager;
-import org.openmrs.module.reporting.report.manager.ReportManager;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 
 /**
@@ -28,10 +26,12 @@ public class MKSReportsActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		log.info("Started MKS Reports");
-		for (ReportManager reportManager : Context.getRegisteredComponents(BaseReportManager.class)) {
-			log.info("Setting up report " + reportManager.getName() + "...");
-			ReportManagerUtil.setupReport(reportManager);
+		log.info("Started " + MKSReportsConstants.MODULE_NAME);
+		for (MKSReportManager reportManager : Context.getRegisteredComponents(MKSReportManager.class)) {
+			if (reportManager.isActive()) {
+				log.info("Setting up report " + reportManager.getName() + "...");
+				ReportManagerUtil.setupReport(reportManager); // if this fails the module won't start altogether
+			}
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class MKSReportsActivator extends BaseModuleActivator {
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutdown MKS Reports");
+		log.info("Shutdown " + MKSReportsConstants.MODULE_NAME);
 	}
 	
 }
