@@ -9,7 +9,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component(OutpatientRecordBookTest.COMPONENT_REPORTMANAGER_TEST)
+@Component(TestReportManagerTest.COMPONENT_REPORTMANAGER_TEST)
 public class TestReportManager extends MKSReportManager {
 	
 	@Autowired
@@ -22,37 +22,31 @@ public class TestReportManager extends MKSReportManager {
 	
 	@Override
 	public ReportDefinition constructReportDefinition() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public String getUuid() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public String getVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

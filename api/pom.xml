@@ -136,7 +136,14 @@
 			<version>${initializerVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.openmrs.contrib</groupId>
+			<artifactId>testutils</artifactId>
+			<version>${openmrsTestutilsVersion}</version>
+			<scope>test</scope>
+		</dependency> 
+
 	</dependencies>
 
 </project>

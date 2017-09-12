@@ -58,7 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDRECBOOK)
-public class OutpatientRecordBook extends MKSReportManager {
+public class OutpatientRecordBookManager extends MKSReportManager {
 	
 	@Autowired
 	private BuiltInPatientDataLibrary builtInPatientData;
@@ -81,6 +81,11 @@ public class OutpatientRecordBook extends MKSReportManager {
 	@Override
 	public boolean isActive() {
 		return inizService.getBooleanFromKey("report.opdrecbook.active", true);
+	}
+	
+	@Override
+	public String getVersion() {
+		return "1.0.0-SNAPSHOT";
 	}
 	
 	@Override
@@ -540,10 +545,5 @@ public class OutpatientRecordBook extends MKSReportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		return Arrays.asList(ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c",
 		    reportDefinition));
-	}
-	
-	@Override
-	public String getVersion() {
-		return "0.1.0-SNAPSHOT";
 	}
 }

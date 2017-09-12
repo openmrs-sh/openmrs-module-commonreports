@@ -46,6 +46,7 @@
 		<providermanagementVersion>2.2</providermanagementVersion>
 		<idgenVersion>4.3</idgenVersion>
 		<initializerVersion>1.0.1-SNAPSHOT</initializerVersion>
+		<openmrsTestutilsVersion>1.3</openmrsTestutilsVersion>
 	</properties>
 
 	<repositories>
