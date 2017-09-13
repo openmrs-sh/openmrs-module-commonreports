@@ -33,11 +33,4 @@ public class MKSReportsConstants {
 	
 	public static final String GP_2ND_PHONE_NUMBER_UUID = MODULE_ARTIFACT_ID + ".2ndPhoneNumberUuid";
 	
-	/*
-	 * UUIDs (not set as GP, since they are processed at the creation of the report (once and for all),
-	 * therefore using a GP which is supposed to have runtime impact could lead to confusion.
-	 */
-	public static final String DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID = "1df3e8c6-564e-4da9-9094-5d36f68100c9";
-	
-	public static final String DRUG_ORDER_TYPE_UUID = "131168f4-15f5-102d-96e4-000c29c2a5d7";
 }

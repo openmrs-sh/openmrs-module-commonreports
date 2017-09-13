@@ -10,8 +10,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.mksreports.MKSReportsConstants;
+import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.common.ContactInfo;
 import org.openmrs.module.mksreports.definition.data.ContactInfoDataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -30,16 +29,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ContactInfoDataEvaluator implements PatientDataEvaluator {
 	
 	@Autowired
-	PatientDataService patientDataService;
+	private PatientDataService patientDataService;
 	
 	@Autowired
-	PersonDataService personDataService;
+	private PersonDataService personDataService;
 	
 	@Autowired
-	PatientService patientService;
+	private PatientService patientService;
 	
 	@Autowired
-	PersonService personService;
+	private InitializerService inizService;
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
@@ -66,11 +65,11 @@ public class ContactInfoDataEvaluator implements PatientDataEvaluator {
 	
 	private List<PersonAttribute> getPhoneNumbers(Patient patient) {
 		// Get the phones numbers attributes and concatenate them in one single string
-		PersonAttributeType primaryPhoneNumberType = personService.getPersonAttributeTypeByUuid(Context
-		        .getAdministrationService().getGlobalProperty(MKSReportsConstants.GP_PHONE_NUMBER_UUID));
+		PersonAttributeType primaryPhoneNumberType = inizService
+		        .getPersonAttributeTypeFromKey("report.contactInfo.primaryPhone.pat");
 		PersonAttribute primaryPhoneNumber = patient.getAttribute(primaryPhoneNumberType);
-		PersonAttributeType secondaryPhoneNumberType = personService.getPersonAttributeTypeByUuid(Context
-		        .getAdministrationService().getGlobalProperty(MKSReportsConstants.GP_2ND_PHONE_NUMBER_UUID));
+		PersonAttributeType secondaryPhoneNumberType = inizService
+		        .getPersonAttributeTypeFromKey("report.contactInfo.secondaryPhone.pat");
 		PersonAttribute secondaryPhoneNumber = patient.getAttribute(secondaryPhoneNumberType);
 		
 		return Arrays.asList(primaryPhoneNumber, secondaryPhoneNumber);

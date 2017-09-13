@@ -13,7 +13,6 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
@@ -67,9 +66,6 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 	private PatientService patientService;
 	
 	@Autowired
-	private PersonService personService;
-	
-	@Autowired
 	private ConceptService conceptService;
 	
 	@Autowired
@@ -111,89 +107,11 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
-	private Parameter getGivenNameLocalParameter() {
-		return new Parameter("givenNameLocal", "Given name in the local language Person Attribute Type",
-		        PersonAttributeType.class);
-	}
-	
-	private Parameter getMiddleNameLocalParameter() {
-		return new Parameter("middleNameLocal", "Middle name in the local language Person Attribute Type",
-		        PersonAttributeType.class);
-	}
-	
-	private Parameter getFamilyNameLocalParameter() {
-		return new Parameter("familyNameLocal", "Family name in the local language Person Attribute Type",
-		        PersonAttributeType.class);
-	}
-	
-	private Parameter getGuardianNameParameter() {
-		return new Parameter("guardian", "Guardian Person Attribute Type", PersonAttributeType.class);
-	}
-	
-	private Parameter getDistanceFromHCParameter() {
-		return new Parameter("distanceFromHC", "Distance from Health Center Attribute Type", PersonAttributeType.class);
-	}
-	
-	private Parameter getGestationParameter() {
-		return new Parameter("gestation", "Gestational Age Concept", Concept.class);
-	}
-	
-	private Parameter getSymptomsParameter() {
-		return new Parameter("symptoms", "Symptoms Concept", Concept.class);
-	}
-	
-	private Parameter getDiagnosisParameter() {
-		return new Parameter("diagnosis", "Diagnosis Concept", Concept.class);
-	}
-	
-	private Parameter getHeightParameter() {
-		return new Parameter("height", "Height Concept", Concept.class);
-	}
-	
-	private Parameter getWeightParameter() {
-		return new Parameter("weight", "Weight Concept", Concept.class);
-	}
-	
-	private Parameter getReferredFromParameter() {
-		return new Parameter("referredFrom", "Referred From Concept", Concept.class);
-	}
-	
-	private Parameter getOldCaseParameter() {
-		return new Parameter("oldCase", "Old Case Concept", Concept.class);
-	}
-	
-	private Parameter getReferredToParameter() {
-		return new Parameter("referredTo", "Referred To Concept", Concept.class);
-	}
-	
-	private Parameter getPaymentTypeParameter() {
-		return new Parameter("paymentType", "Payment Type Concept", Concept.class);
-	}
-	
-	private Parameter getPastMedicalHistoryParameter() {
-		return new Parameter("pastMedicalHistory", "Past Medical History Concept", Concept.class);
-	}
-	
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
-		params.add(getGivenNameLocalParameter());
-		params.add(getMiddleNameLocalParameter());
-		params.add(getFamilyNameLocalParameter());
-		params.add(getGuardianNameParameter());
-		params.add(getDistanceFromHCParameter());
-		params.add(getGestationParameter());
-		params.add(getSymptomsParameter());
-		params.add(getDiagnosisParameter());
-		params.add(getHeightParameter());
-		params.add(getWeightParameter());
-		params.add(getReferredFromParameter());
-		params.add(getOldCaseParameter());
-		params.add(getReferredToParameter());
-		params.add(getPaymentTypeParameter());
-		params.add(getPastMedicalHistoryParameter());
 		return params;
 	}
 	
@@ -227,7 +145,7 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		// Patient Identifiers (all)
 		PatientIdentifierDataDefinition piDD = new PatientIdentifierDataDefinition();
 		piDD.setTypes(patientService.getAllPatientIdentifierTypes());
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), piDD, (String) null);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.identifier.label"), piDD, null);
 		
 		// Patient Name
 		PersonNameAndAttributesDataDefinition nameDD = new PersonNameAndAttributesDataDefinition();
@@ -239,65 +157,39 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
 		// Given name local
 		PersonAttributeDataDefinition givenNameLocalDD = new PersonAttributeDataDefinition();
-		givenNameLocalDD
-		        .addParameter(new Parameter("personAttributeType", "Given Name Local PAT", PersonAttributeType.class));
+		givenNameLocalDD.setPersonAttributeType(inizService
+		        .getPersonAttributeTypeFromKey("report.opdrecbook.givenNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedGivenNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedGivenNameLocalDD.setParameterizable(givenNameLocalDD);
 		
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("personAttributeType", "${givenNameLocal}");
-			mappedGivenNameLocalDD.setParameterMappings(parameterMappings);
-		}
-		
 		// Middle name local
 		PersonAttributeDataDefinition middleNameLocalDD = new PersonAttributeDataDefinition();
-		middleNameLocalDD.addParameter(new Parameter("personAttributeType", "Middle Name Local PAT",
-		        PersonAttributeType.class));
+		middleNameLocalDD.setPersonAttributeType(inizService
+		        .getPersonAttributeTypeFromKey("report.opdrecbook.middleNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedMiddleNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedMiddleNameLocalDD.setParameterizable(middleNameLocalDD);
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("personAttributeType", "${middleNameLocal}");
-			mappedMiddleNameLocalDD.setParameterMappings(parameterMappings);
-		}
 		
 		// Family name local
 		PersonAttributeDataDefinition familyNameLocalDD = new PersonAttributeDataDefinition();
-		familyNameLocalDD.addParameter(new Parameter("personAttributeType", "Family Name Local PAT",
-		        PersonAttributeType.class));
+		familyNameLocalDD.setPersonAttributeType(inizService
+		        .getPersonAttributeTypeFromKey("report.opdrecbook.familyNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedFamilyNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedFamilyNameLocalDD.setParameterizable(familyNameLocalDD);
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("personAttributeType", "${familyNameLocal}");
-			mappedFamilyNameLocalDD.setParameterMappings(parameterMappings);
-		}
 		
 		List<Mapped<? extends PersonAttributeDataDefinition>> attributes = new ArrayList<Mapped<? extends PersonAttributeDataDefinition>>();
 		attributes.add(mappedGivenNameLocalDD);
 		attributes.add(mappedMiddleNameLocalDD);
 		attributes.add(mappedFamilyNameLocalDD);
 		
-		nameDD.addParameter(new Parameter("givenNameLocal", "Given Name Local PAT", PersonAttributeType.class));
-		nameDD.addParameter(new Parameter("middleNameLocal", "Middle Name Local PAT", PersonAttributeType.class));
-		nameDD.addParameter(new Parameter("familyNameLocal", "Family Name Local PAT", PersonAttributeType.class));
-		
 		nameDD.setPreferredNameDefinition(mappedPreferredNameDD);
 		nameDD.setPersonAttributeDefinitions(attributes);
 		
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.patientName.label"), nameDD,
-		    ObjectUtil.toString(Mapped.straightThroughMappings(nameDD), "=", ","));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.patientName.label"), nameDD, null);
 		
 		// Guardian Name
 		PersonAttributeDataDefinition paDD1 = new PersonAttributeDataDefinition();
-		paDD1.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("personAttributeType", "${guardian}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD1,
-			    ObjectUtil.toString(parameterMappings, "=", ","));
-		}
+		paDD1.setPersonAttributeType(inizService.getPersonAttributeTypeFromKey("report.opdrecbook.guardian.pat"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.guardianName.label"), paDD1, null);
 		
 		String isOfCategoryLabel = MessageUtil.translate("mksreports.report.outpatientRecordBook.isOfCategory.label");
 		
@@ -352,93 +244,72 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		
 		// Distance from Health Center zones
 		PersonAttributeDataDefinition paDD2 = new PersonAttributeDataDefinition();
-		{
-			PersonAttributeType defaultPat = personService
-			        .getPersonAttributeTypeByUuid(MKSReportsConstants.DISTANCE_FROM_HC_PERSON_ATTRIBUTE_TYPE_UUID);
-			PersonAttributeType configPat = inizService.getPersonAttributeTypeFromKey(
-			    "report.opdrecbook.distancehc.pat.uuid", defaultPat);
-			paDD2.addParameter(new Parameter("personAttributeType", "Person Attribute Type", PersonAttributeType.class));
-			
-			Concept distanceFromHCConcept = conceptService.getConcept(configPat.getForeignKey());
-			// Dynamically create the columns based on the Distance From HC concept
-			if (distanceFromHCConcept != null) {
-				for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
-					Concept zone = answer.getAnswerConcept();
-					DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(
-					        Arrays.asList(zone), isOfCategoryLabel, "");
-					Map<String, Object> parameterMappings = new HashMap<String, Object>();
-					parameterMappings.put("personAttributeType", "${distanceFromHC}");
-					vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2,
-					    ObjectUtil.toString(parameterMappings, "=", ","), zoneConverter);
-				}
+		PersonAttributeType distanceHC = inizService.getPersonAttributeTypeFromKey("report.opdrecbook.distanceHC.pat");
+		paDD2.setPersonAttributeType(distanceHC);
+		
+		Concept distanceFromHCConcept = conceptService.getConcept(distanceHC.getForeignKey());
+		// Dynamically create the columns based on the Distance From HC concept
+		if (distanceFromHCConcept != null) {
+			for (ConceptAnswer answer : distanceFromHCConcept.getAnswers()) {
+				Concept zone = answer.getAnswerConcept();
+				DistanceFromHealthCenterConverter zoneConverter = new DistanceFromHealthCenterConverter(Arrays.asList(zone),
+				        isOfCategoryLabel, "");
+				vdsd.addColumn(zone.getShortNameInLocale(Context.getLocale()).getName(), paDD2, null, zoneConverter);
 			}
 		}
-		
-		ObsForVisitDataDefinition obsDD = new ObsForVisitDataDefinition();
-		obsDD.setParameters(Arrays.asList(new Parameter("question", "Question", Concept.class)));
 		
 		CollectionConverter obsListValueConverter = new CollectionConverter(new ObsValueConverter(), false, null);
 		
 		// Gestational Age
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${gestation}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.gestationalAge.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition gestationObsDD = new ObsForVisitDataDefinition();
+		gestationObsDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.gestation.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.gestationalAge.label"), gestationObsDD,
+		    null, obsListValueConverter);
 		
 		// Address and phone
 		ContactInfoDataDefinition ciDD = new ContactInfoDataDefinition();
 		AddressAndPhoneConverter addressAndPhoneConverter = new AddressAndPhoneConverter();
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD,
-		    (String) null, addressAndPhoneConverter);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.addressAndPhone.label"), ciDD, null,
+		    addressAndPhoneConverter);
 		
 		// Referred From (Referred From observation)
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${referredFrom}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition referredFromDD = new ObsForVisitDataDefinition();
+		referredFromDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.referredFrom.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredFrom.label"), referredFromDD,
+		    null, obsListValueConverter);
 		
 		// New Case/Old Case categories
 		ObsBooleanConverter trueConverter = new ObsBooleanConverter("", isOfCategoryLabel);
 		ObsBooleanConverter falseConverter = new ObsBooleanConverter(isOfCategoryLabel, "");
 		
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${oldCase}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.newCase.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), trueConverter);
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.oldCase.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), falseConverter);
-		}
+		ObsForVisitDataDefinition oldCaseDD = new ObsForVisitDataDefinition();
+		oldCaseDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.oldCase.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.newCase.label"), oldCaseDD, null,
+		    trueConverter);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.oldCase.label"), oldCaseDD, null,
+		    falseConverter);
 		
 		// Symptoms (Chief complaint observation)
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${symptoms}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition symptomsDD = new ObsForVisitDataDefinition();
+		symptomsDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.symptoms.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.symptoms.label"), symptomsDD, null,
+		    obsListValueConverter);
 		
 		// Diagnosis (Diagnosis observation)
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${diagnosis}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition diagnosisDD = new ObsForVisitDataDefinition();
+		diagnosisDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.diagnosis.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.diagnosis.label"), diagnosisDD, null,
+		    obsListValueConverter);
 		
 		// Treatment (Orders)
 		OrderForVisitDataDefinition orderDD = new OrderForVisitDataDefinition();
-		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(MKSReportsConstants.DRUG_ORDER_TYPE_UUID)));
+		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(inizService
+		        .getValueFromKey("report.opdrecbook.drugOrder.orderType"))));
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
 		    (String) null, new CollectionConverter(new OrderConverter(), false, null));
 		
 		NullToNAConverter nullToNAConverter = new NullToNAConverter(
 		        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
-		
 		// IMCI program started
 		// TODO: Currently the IMCI program is not implemented. Returning "N/A" in each cell 
 		IMCIProgramDataDefinition imciDD = new IMCIProgramDataDefinition();
@@ -450,19 +321,17 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 			ObsForVisitDataDefinition obsVisitDD = new ObsForVisitDataDefinition();
 			// Use the most recent Weight
 			obsVisitDD.setWhich(TimeQualifier.LAST);
-			obsVisitDD.addParameter(new Parameter("question", "question", Concept.class));
+			obsVisitDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.weight.concept"));
 			
 			AgeDataDefinition agePersonDD = new AgeDataDefinition();
 			agePersonDD.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 			{
 				Map<String, Object> parameterMappings = new HashMap<String, Object>();
-				parameterMappings.put("question", "${weight}");
 				parameterMappings.put("effectiveDate", "${endDate}");
 				
 				ObsOnAgeDataDefinition obsOnAge = new ObsOnAgeDataDefinition();
 				obsOnAge.setObsDefinition(Mapped.mapStraightThrough(obsVisitDD));
 				obsOnAge.setAgeDefinition(Mapped.mapStraightThrough(agePersonDD));
-				obsOnAge.addParameter(new Parameter("question", "Question", Concept.class));
 				obsOnAge.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 				
 				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnAge.label"), obsOnAge,
@@ -475,68 +344,44 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 			ObsForVisitDataDefinition weightDD = new ObsForVisitDataDefinition();
 			// Use the most recent Weight
 			weightDD.setWhich(TimeQualifier.LAST);
-			weightDD.addParameter(new Parameter("question", "Question", Concept.class));
-			Map<String, Object> weightMappings = new HashMap<String, Object>();
-			weightMappings.put("question", "${question1}");
+			weightDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.weight.concept"));
+			
 			Mapped<ObsForVisitDataDefinition> mappedWeightDD = new Mapped<ObsForVisitDataDefinition>();
 			mappedWeightDD.setParameterizable(weightDD);
-			mappedWeightDD.setParameterMappings(weightMappings);
 			
 			ObsForVisitDataDefinition heightDD = new ObsForVisitDataDefinition();
 			// Use the most recent Height
 			heightDD.setWhich(TimeQualifier.LAST);
-			heightDD.addParameter(new Parameter("question", "Question", Concept.class));
-			Map<String, Object> heightMappings = new HashMap<String, Object>();
-			heightMappings.put("question", "${question2}");
+			heightDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.height.concept"));
 			Mapped<ObsForVisitDataDefinition> mappedHeightDD = new Mapped<ObsForVisitDataDefinition>();
 			mappedHeightDD.setParameterizable(weightDD);
-			mappedHeightDD.setParameterMappings(heightMappings);
 			
-			{
-				Map<String, Object> parameterMappings = new HashMap<String, Object>();
-				parameterMappings.put("question1", "${weight}");
-				parameterMappings.put("question2", "${height}");
-				
-				CalculatedObsDataDefinition calculatedDD = new CalculatedObsDataDefinition();
-				calculatedDD.setOperator(Operator.DIVISION);
-				calculatedDD.setObsDefinition1(mappedWeightDD);
-				calculatedDD.setObsDefinition2(mappedHeightDD);
-				
-				// Adding 2 parameters on the calculatedDD in order to ensure that question1 and question2
-				// are passed to its properties 'weightDD' and 'heightDD'
-				// These parameters do not have to match an existing property of the CalculatedObsDataDefinition
-				// They are just used to pass the 'weight' and 'height' report params
-				calculatedDD.addParameter(new Parameter("question1", "Question 1", Concept.class));
-				calculatedDD.addParameter(new Parameter("question2", "Question 2", Concept.class));
-				
-				vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"),
-				    calculatedDD, ObjectUtil.toString(parameterMappings, "=", ","), new RoundNumber(2));
-			}
+			CalculatedObsDataDefinition calculatedDD = new CalculatedObsDataDefinition();
+			calculatedDD.setOperator(Operator.DIVISION);
+			calculatedDD.setObsDefinition1(mappedWeightDD);
+			calculatedDD.setObsDefinition2(mappedHeightDD);
+			
+			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.weightOnHeight.label"),
+			    calculatedDD, null, new RoundNumber(2));
 		}
 		
 		// Referred To
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${referredTo}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredTo.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition referredToDD = new ObsForVisitDataDefinition();
+		referredToDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.referredTo.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.referredTo.label"), referredToDD, null,
+		    obsListValueConverter);
 		
 		// Payment Type
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${paymentType}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.paymentType.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), new CodedToShortNameConverter());
-		}
+		ObsForVisitDataDefinition paymentTypeDD = new ObsForVisitDataDefinition();
+		paymentTypeDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.paymentType.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.paymentType.label"), paymentTypeDD,
+		    null, new CodedToShortNameConverter());
 		
 		// Other notes (Past medical history observation)
-		{
-			Map<String, Object> parameterMappings = new HashMap<String, Object>();
-			parameterMappings.put("question", "${pastMedicalHistory}");
-			vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.otherNotes.label"), obsDD,
-			    ObjectUtil.toString(parameterMappings, "=", ","), obsListValueConverter);
-		}
+		ObsForVisitDataDefinition otherNotesDD = new ObsForVisitDataDefinition();
+		otherNotesDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.otherNotes.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.otherNotes.label"), otherNotesDD, null,
+		    obsListValueConverter);
 		
 		return rd;
 	}

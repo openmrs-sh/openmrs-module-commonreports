@@ -86,16 +86,6 @@ public class OutpatientRecordBookManagerTest extends BaseModuleContextSensitiveT
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue("startDate", DateUtil.parseDate("2017-09-01", "yyyy-MM-dd"));
 		context.addParameterValue("endDate", DateUtil.parseDate("2017-09-30", "yyyy-MM-dd"));
-		context.addParameterValue("gestation", cs.getConcept(4));
-		context.addParameterValue("referredFrom", cs.getConcept(5));
-		context.addParameterValue("oldCase", cs.getConcept(6));
-		context.addParameterValue("symptoms", cs.getConcept(7));
-		context.addParameterValue("diagnosis", cs.getConcept(8));
-		context.addParameterValue("weight", cs.getConcept(9));
-		context.addParameterValue("height", cs.getConcept(10));
-		context.addParameterValue("referredTo", cs.getConcept(11));
-		context.addParameterValue("paymentType", cs.getConcept(12));
-		context.addParameterValue("pastMedicalHistory", cs.getConcept(13));
 		
 		ReportDefinition rd = manager.constructReportDefinition();
 		ReportData data = rds.evaluate(rd, context);
