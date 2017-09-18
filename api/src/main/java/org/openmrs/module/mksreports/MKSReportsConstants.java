@@ -25,12 +25,6 @@ public class MKSReportsConstants {
 	
 	public static final String COMPONENT_REPORTMANAGER_OPDRECBOOK = MODULE_ARTIFACT_ID + ".outpatientRecordBook";
 	
-	/*
-	 * Global properties
-	 */
-	
-	public static final String GP_PHONE_NUMBER_UUID = MODULE_ARTIFACT_ID + ".phoneNumberUuid";
-	
-	public static final String GP_2ND_PHONE_NUMBER_UUID = MODULE_ARTIFACT_ID + ".2ndPhoneNumberUuid";
+	public static final String COMPONENT_REPORTMANAGER_OPDCONSULT = MODULE_ARTIFACT_ID + ".outpatientConsultation";
 	
 }

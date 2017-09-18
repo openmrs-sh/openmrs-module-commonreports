@@ -16,5 +16,13 @@
   "report.opdrecbook.otherNotes.concept": "96408258-000b-424e-af1a-403919332938",
   "report.opdrecbook.height.concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
   "report.opdrecbook.weight.concept": "a09ab2c5-878e-4905-b25d-5784167d0216",
-  "report.test.active": "no"
+  
+  "report.contactInfo.primaryPhone.pat": "",
+  "report.contactInfo.secondaryPhone.pat": "",
+  
+  "report.test.active": "no",
+  
+  "report.opdconsult.active": "true",
+  "report.opdconsult.diagnosisQuestion.concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+  "report.opdconsult.diagnosesList.concept":"14204451-8cfb-48b9-8e04-4e218798b8c4"
 }

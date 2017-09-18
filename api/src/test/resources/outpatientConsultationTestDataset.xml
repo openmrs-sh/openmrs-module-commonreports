@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+	<visit visit_id="242" patient_id="7" visit_type_id="1"
+		date_started="2017-07-06 00:00:00.0" creator="1" date_created="2017-07-01 00:00:00.0"
+		voided="0" uuid="eb5c1e39-f9ea-41f4-9780-438ade34d0e4" />
+
+	<encounter encounter_id="101" encounter_type="1" patient_id="2"
+		visit_id="242" location_id="1" form_id="1" encounter_datetime="2017-07-07 00:00:00.0"
+		creator="1" date_created="2017-07-07 00:00:00.0" voided="false"
+		uuid="8405e878-4874-404e-9faa-8b277277f547" />
+
+	<obs obs_id="4000" person_id="2" concept_id="4" encounter_id="101"
+		obs_datetime="2017-07-01 00:00:00.0" location_id="1" value_coded="9"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="456c5cc9-decb-4434-9f27-99ca841177f0" />
+
+	<obs obs_id="4001" person_id="8" concept_id="4" encounter_id="101"
+		obs_datetime="2017-07-02 00:00:00.0" location_id="1" value_coded="10"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="2ba154ad-4ef3-4df0-b5e6-7d9dfb49a118" />
+
+	<concept concept_id="3100" retired="false" datatype_id="2"
+		class_id="11" is_set="true" creator="1" date_created="2017-07-01 00:00:00.0"
+		version="" uuid="14204451-8cfb-48b9-8e04-4e218798b8c4" />
+	<concept_name concept_id="3100" name="List of diagnoses to report"
+		locale="en_GB" creator="1" date_created="2017-07-01 00:00:00.0"
+		concept_name_id="3500" concept_name_type="SHORT" locale_preferred="1"
+		voided="false" uuid="64204451-8cfb-48b9-8e04-4e218798b8c4" />
+	<concept_set concept_set_id="1" concept_id="9" concept_set="3100"
+		sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
+		uuid="34204451-8cfb-48b9-8e04-4e218798b8c4" />
+	<concept_set concept_set_id="2" concept_id="10" concept_set="3100"
+		sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
+		uuid="24204451-8cfb-48b9-8e04-4e218798b8c4" />
+
+</dataset>
