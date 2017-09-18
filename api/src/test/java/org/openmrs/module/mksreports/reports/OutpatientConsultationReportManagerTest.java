@@ -1,7 +1,6 @@
 package org.openmrs.module.mksreports.reports;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Iterator;
@@ -51,7 +50,7 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 	@Qualifier(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDCONSULT)
 	private MKSReportManager manager;
 	
-	protected static final String XML_DATASET_PATH = "";
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "outpatientConsultationTestDataset.xml";
 	
@@ -90,21 +89,65 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 			DataSetRow row = itr.next();
 			
 			// In CrossTabDataSet reports all rows and columns are in fact just columns of one row
-			// Ensure that the report contains the 4 possible combinations
-			Cohort col1 = (Cohort) row.getColumnValue("HIV PROGRAM.Males");
+			
+			// Ensure that the report contains 4 possible combinations
+			Cohort col1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col11);
 			assertNotNull(col1);
 			assertEquals(1, col1.getSize());
-			Cohort col2 = (Cohort) row.getColumnValue("HIV PROGRAM.Females");
+			Cohort col2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col12);
 			assertNotNull(col2);
-			assertEquals(0, col2.getSize());
-			Cohort col3 = (Cohort) row.getColumnValue("MDR-TB PROGRAM.Males");
+			assertEquals(1, col2.getSize());
+			Cohort col3 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col11);
 			assertNotNull(col3);
 			assertEquals(0, col3.getSize());
-			Cohort col4 = (Cohort) row.getColumnValue("MDR-TB PROGRAM.Females");
+			Cohort col4 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col12);
 			assertNotNull(col4);
 			assertEquals(1, col4.getSize());
+			
+			// Total column
+			Cohort total1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col17);
+			assertNotNull(total1);
+			assertEquals(1, total1.getSize());
+			assertTrue(total1.getMemberIds().contains(2));
+			Cohort total2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col18);
+			assertNotNull(total2);
+			assertEquals(1, total2.getSize());
+			assertTrue(total2.getMemberIds().contains(7));
+			Cohort total3 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col17);
+			assertNotNull(total3);
+			assertEquals(0, total3.getSize());
+			Cohort total4 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col18);
+			assertNotNull(total4);
+			assertEquals(1, total4.getSize());
+			assertTrue(total4.getMemberIds().contains(7));
+			
+			// Quick tests on the malaria program which should return empty
+			Cohort col5 = (Cohort) row.getColumnValue("MALARIA PROGRAM." + OutpatientConsultationReportManager.col17);
+			assertNotNull(col5);
+			assertEquals(0, col5.getSize());
+			Cohort col6 = (Cohort) row.getColumnValue("MALARIA PROGRAM." + OutpatientConsultationReportManager.col18);
+			assertNotNull(col6);
+			assertEquals(0, col6.getSize());
+			
+			// Referred To column
+			Cohort referredTo1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col19);
+			assertNotNull(referredTo1);
+			assertEquals(0, referredTo1.getSize());
+			Cohort referredTo2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col20);
+			assertNotNull(referredTo2);
+			assertEquals(1, referredTo2.getSize());
+			
+			// HEF column
+			Cohort hef1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col21);
+			assertNotNull(hef1);
+			assertEquals(1, hef1.getSize());
+			assertTrue(hef1.getMemberIds().contains(2));
+			
+			Cohort hef2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col22);
+			assertNotNull(hef2);
+			assertEquals(0, hef2.getSize());
+			
 		}
 	}
-	
 	
 }

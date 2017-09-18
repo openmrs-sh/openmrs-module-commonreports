@@ -18,12 +18,26 @@
 		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
 		uuid="456c5cc9-decb-4434-9f27-99ca841177f0" />
 
-	<obs obs_id="4001" person_id="8" concept_id="4" encounter_id="101"
+	<obs obs_id="4001" person_id="7" concept_id="4" encounter_id="101"
 		obs_datetime="2017-07-02 00:00:00.0" location_id="1" value_coded="10"
 		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
 		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
 		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
 		uuid="2ba154ad-4ef3-4df0-b5e6-7d9dfb49a118" />
+
+	<obs obs_id="4002" person_id="7" concept_id="4" encounter_id="101"
+		obs_datetime="2017-07-02 00:00:00.0" location_id="1" value_coded="9"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="11a7598a-957e-4826-a0bb-87a5b82a2324" />
+
+	<obs obs_id="4003" person_id="7" concept_id="28" encounter_id="101"
+		obs_datetime="2017-07-02 00:00:00.0" location_id="1" value_coded="[NULL]"
+		comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="Referral Hospital"
+		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66" />
 
 	<concept concept_id="3100" retired="false" datatype_id="2"
 		class_id="11" is_set="true" creator="1" date_created="2017-07-01 00:00:00.0"
@@ -35,8 +49,22 @@
 	<concept_set concept_set_id="1" concept_id="9" concept_set="3100"
 		sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
 		uuid="34204451-8cfb-48b9-8e04-4e218798b8c4" />
-	<concept_set concept_set_id="2" concept_id="10" concept_set="3100"
-		sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
+	<concept_set concept_set_id="2" concept_id="10"
+		concept_set="3100" sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
 		uuid="24204451-8cfb-48b9-8e04-4e218798b8c4" />
+	<concept_set concept_set_id="3" concept_id="11"
+		concept_set="3100" sort_weight="0.0" creator="1" date_created="2017-07-01 00:00:00.0"
+		uuid="2729c499-3946-4446-96f6-7091a03f0b04" />
+
+	<patient_identifier_type
+		patient_identifier_type_id="400" name="HEF ID" description="Health Equity Fund"
+		format="" creator="1" date_created="2017-09-18 15:00:00.0" required="false"
+		format_description="" validator="" retired="false"
+		uuid="2e7e0cee-2848-45b3-9d85-7bc758c65746" />
+
+	<patient_identifier patient_identifier_id="200"
+		patient_id="2" identifier="101" identifier_type="400" preferred="0"
+		location_id="1" creator="1" date_created="2017-09-18 15:01:00.0"
+		voided="false" void_reason="" uuid="db39dc88-3ead-47ee-af6b-b4cc11b006ce" />
 
 </dataset>

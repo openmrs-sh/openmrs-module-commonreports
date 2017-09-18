@@ -41,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
-	protected static final String XML_DATASET_PATH = "";
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
 	

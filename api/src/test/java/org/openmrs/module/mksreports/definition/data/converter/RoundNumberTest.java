@@ -8,7 +8,7 @@ import org.openmrs.module.mksreports.data.converter.RoundNumber;
 
 public class RoundNumberTest {
 	
-	protected static final String XML_DATASET_PATH = "";
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
 	

@@ -19,10 +19,12 @@
   
   "report.contactInfo.primaryPhone.pat": "",
   "report.contactInfo.secondaryPhone.pat": "",
-  
+    
   "report.test.active": "no",
   
   "report.opdconsult.active": "true",
   "report.opdconsult.diagnosisQuestion.concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
-  "report.opdconsult.diagnosesList.concept":"14204451-8cfb-48b9-8e04-4e218798b8c4"
+  "report.opdconsult.diagnosesList.concept":"14204451-8cfb-48b9-8e04-4e218798b8c4",
+  "report.opdconsult.referredTo.concept":"7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66",
+  "report.opdconsult.hefId.pit":"2e7e0cee-2848-45b3-9d85-7bc758c65746"
 }

@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -42,9 +41,6 @@ public class OutpatientRecordBookManagerTest extends BaseModuleContextSensitiveT
 	@Autowired
 	@Qualifier("conceptService")
 	private ConceptService cs;
-	
-	@Autowired
-	private TestDataManager testData;
 	
 	@Autowired
 	@Qualifier(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDRECBOOK)
