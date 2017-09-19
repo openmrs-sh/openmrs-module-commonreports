@@ -127,7 +127,7 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		
 		VisitDataSetDefinition vdsd = new VisitDataSetDefinition();
 		vdsd.addParameters(getParameters());
-		rd.addDataSetDefinition("visits", Mapped.mapStraightThrough(vdsd));
+		rd.addDataSetDefinition(getName(), Mapped.mapStraightThrough(vdsd));
 		
 		BasicVisitQuery query = new BasicVisitQuery();
 		

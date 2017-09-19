@@ -135,7 +135,7 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		
 		CohortCrossTabDataSetDefinition OPDConsult = new CohortCrossTabDataSetDefinition();
 		OPDConsult.addParameters(getParameters());
-		rd.addDataSetDefinition("Outpatient Consultation", Mapped.mapStraightThrough(OPDConsult));
+		rd.addDataSetDefinition(getName(), Mapped.mapStraightThrough(OPDConsult));
 		
 		Concept allDiags = inizService.getConceptFromKey("report.opdconsult.diagnosesList.concept");
 		

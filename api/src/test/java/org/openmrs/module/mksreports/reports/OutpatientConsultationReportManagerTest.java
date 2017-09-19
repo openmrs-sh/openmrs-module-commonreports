@@ -85,7 +85,7 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 		ReportDefinition rd = manager.constructReportDefinition();
 		ReportData data = rds.evaluate(rd, context);
 		
-		for (Iterator<DataSetRow> itr = data.getDataSets().get("Outpatient Consultation").iterator(); itr.hasNext();) {
+		for (Iterator<DataSetRow> itr = data.getDataSets().get(rd.getName()).iterator(); itr.hasNext();) {
 			DataSetRow row = itr.next();
 			
 			// In CrossTabDataSet reports all rows and columns are in fact just columns of one row
