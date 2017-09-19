@@ -244,13 +244,6 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		OPDConsult.addColumn(col19, createCohortComposition(referredTo, males), null);
 		OPDConsult.addColumn(col20, createCohortComposition(referredTo, females), null);
 		
-		// HEF column
-		PatientIdentifierCohortDefinition hefId = new PatientIdentifierCohortDefinition();
-		hefId.setTypesToMatch(Arrays.asList(patientService.getPatientIdentifierTypeByUuid(inizService
-		        .getValueFromKey("report.opdconsult.hefId.pit"))));
-		OPDConsult.addColumn(col21, createCohortComposition(hefId, males), null);
-		OPDConsult.addColumn(col22, createCohortComposition(hefId, females), null);
-		
 		return rd;
 	}
 	

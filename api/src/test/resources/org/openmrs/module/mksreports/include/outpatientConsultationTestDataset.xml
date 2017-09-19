@@ -39,6 +39,13 @@
 		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
 		uuid="7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66" />
 
+	<obs obs_id="4004" person_id="7" concept_id="4" encounter_id="101"
+		obs_datetime="2017-09-01 00:00:00.0" location_id="1" value_coded="10"
+		comments="" creator="1" date_created="2017-09-01 00:00:00.0" voided="false"
+		value_coded_name_id="[NULL]" value_complex="[NULL]" value_text="[NULL]"
+		value_numeric="[NULL]" value_datetime="[NULL]" value_drug="[NULL]"
+		uuid="99430020-488e-46ea-919d-fe0911d8cdcf" />
+
 	<concept concept_id="3100" retired="false" datatype_id="2"
 		class_id="11" is_set="true" creator="1" date_created="2017-07-01 00:00:00.0"
 		version="" uuid="14204451-8cfb-48b9-8e04-4e218798b8c4" />
@@ -63,7 +70,7 @@
 		uuid="2e7e0cee-2848-45b3-9d85-7bc758c65746" />
 
 	<patient_identifier patient_identifier_id="200"
-		patient_id="2" identifier="101" identifier_type="400" preferred="0"
+		patient_id="2" identifier="HEF_0001" identifier_type="400" preferred="0"
 		location_id="1" creator="1" date_created="2017-09-18 15:01:00.0"
 		voided="false" void_reason="" uuid="db39dc88-3ead-47ee-af6b-b4cc11b006ce" />
 

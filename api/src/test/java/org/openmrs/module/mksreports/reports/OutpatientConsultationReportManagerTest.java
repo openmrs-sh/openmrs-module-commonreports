@@ -137,16 +137,6 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 			assertNotNull(referredTo2);
 			assertEquals(1, referredTo2.getSize());
 			
-			// HEF column
-			Cohort hef1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col21);
-			assertNotNull(hef1);
-			assertEquals(1, hef1.getSize());
-			assertTrue(hef1.getMemberIds().contains(2));
-			
-			Cohort hef2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col22);
-			assertNotNull(hef2);
-			assertEquals(0, hef2.getSize());
-			
 		}
 	}
 	
