@@ -134,6 +134,8 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		rd.setParameters(getParameters());
 		
 		CohortCrossTabDataSetDefinition OPDConsult = new CohortCrossTabDataSetDefinition();
+		OPDConsult.addParameters(getParameters());
+		rd.addDataSetDefinition("Outpatient Consultation", Mapped.mapStraightThrough(OPDConsult));
 		
 		Concept allDiags = inizService.getConceptFromKey("report.opdconsult.diagnosesList.concept");
 		
@@ -249,7 +251,6 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		OPDConsult.addColumn(col21, createCohortComposition(hefId, males), null);
 		OPDConsult.addColumn(col22, createCohortComposition(hefId, females), null);
 		
-		rd.addDataSetDefinition("Outpatient Consultation", Mapped.mapStraightThrough(OPDConsult));
 		return rd;
 	}
 	
@@ -300,7 +301,7 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		        + MessageUtil.translate("mksreports.report.opdconsult.females.label");
 		
 	}
-
+	
 	private CompositionCohortDefinition createCohortComposition(Object... elements) {
 		CompositionCohortDefinition compCD = new CompositionCohortDefinition();
 		compCD.initializeFromElements(elements);
