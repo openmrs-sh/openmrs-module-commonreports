@@ -16,10 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 	
-	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
-	
-	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
-	
 	@Autowired
 	private OrderService orderService;
 	
@@ -27,7 +23,6 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 		
 		orders = new ArrayList<Order>();
 		orders.add(orderService.getOrder(1));

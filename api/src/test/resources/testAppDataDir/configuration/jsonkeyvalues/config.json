@@ -23,7 +23,7 @@
   "report.test.active": "no",
   
   "report.opdconsult.active": "true",
-  "report.opdconsult.diagnosisQuestion.concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
-  "report.opdconsult.diagnosesList.concept":"14204451-8cfb-48b9-8e04-4e218798b8c4",
-  "report.opdconsult.referredTo.concept":"7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66"
+  "report.opdconsult.diagnosisQuestion.concept": "95312123-e0c2-466d-b6b1-cb6e990d0d65",
+  "report.opdconsult.diagnosesList.concept":"0f97e14e-cdc2-49ac-9255-b5126f8a5147",
+  "report.opdconsult.referredTo.concept":"96408258-000b-424e-af1a-403919332938"
 }

@@ -42,7 +42,7 @@ public class CalculatedObsDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
-	protected static final String XML_REPORT_TEST_DATASET = "reportingTestDataset.xml";
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
 	
 	@Autowired
 	private VisitService visitService;
@@ -184,15 +184,15 @@ public class CalculatedObsDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		mappedObsDD1.setParameterizable(obsDD1);
 		
 		ObsForVisitDataDefinition obsDD2 = new ObsForVisitDataDefinition();
-		obsDD2.setQuestion(conceptService.getConcept(5497));
+		obsDD2.setQuestion(conceptService.getConcept(18));
 		obsDD2.setWhich(TimeQualifier.LAST);
 		Mapped<ObsForVisitDataDefinition> mappedObsDD2 = new Mapped<ObsForVisitDataDefinition>();
 		mappedObsDD2.setParameterizable(obsDD2);
 		
 		// Assign Visit 5 to Encounter 3 (which has a one obs of "0" numeric value)
 		Visit visit5 = visitService.getVisit(5);
-		Encounter encounter3 = encounterService.getEncounter(3);
-		encounter3.setVisit(visit5);
+		Encounter encounter7 = encounterService.getEncounter(7);
+		encounter7.setVisit(visit5);
 		
 		{
 			CalculatedObsDataDefinition d = new CalculatedObsDataDefinition(Operator.DIVISION);

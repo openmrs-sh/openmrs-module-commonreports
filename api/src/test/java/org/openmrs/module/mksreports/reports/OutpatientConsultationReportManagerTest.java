@@ -44,21 +44,21 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 	private ConceptService cs;
 	
 	@Autowired
-	private TestDataManager testData;
-	
-	@Autowired
 	@Qualifier(MKSReportsConstants.COMPONENT_REPORTMANAGER_OPDCONSULT)
 	private MKSReportManager manager;
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
-	protected static final String XML_REPORT_TEST_DATASET = "outpatientConsultationTestDataset.xml";
+	protected static final String XML_REPORT_TEST_DATASET_1 = "ReportTestDataset.xml";
+	
+	protected static final String XML_REPORT_TEST_DATASET_2 = "outpatientConsultationTestDataset.xml";
 	
 	@Before
 	public void setUp() throws Exception {
 		String path = getClass().getClassLoader().getResource("testAppDataDir").getPath() + File.separator;
 		System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
-		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET_1);
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET_2);
 		iniz.loadJsonKeyValues();
 	}
 	
@@ -79,8 +79,8 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 	public void testReport() throws Exception {
 		
 		EvaluationContext context = new EvaluationContext();
-		context.addParameterValue("startDate", DateUtil.parseDate("2017-07-01", "yyyy-MM-dd"));
-		context.addParameterValue("endDate", DateUtil.parseDate("2017-07-30", "yyyy-MM-dd"));
+		context.addParameterValue("startDate", DateUtil.parseDate("2008-08-01", "yyyy-MM-dd"));
+		context.addParameterValue("endDate", DateUtil.parseDate("2009-09-30", "yyyy-MM-dd"));
 		
 		ReportDefinition rd = manager.constructReportDefinition();
 		ReportData data = rds.evaluate(rd, context);
@@ -91,49 +91,51 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 			// In CrossTabDataSet reports all rows and columns are in fact just columns of one row
 			
 			// Ensure that the report contains 4 possible combinations
-			Cohort col1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col11);
+			Cohort col1 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col7);
 			assertNotNull(col1);
 			assertEquals(1, col1.getSize());
-			Cohort col2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col12);
+			Cohort col2 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col12);
 			assertNotNull(col2);
 			assertEquals(1, col2.getSize());
-			Cohort col3 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col11);
+			Cohort col3 = (Cohort) row.getColumnValue("NO." + OutpatientConsultationReportManager.col7);
 			assertNotNull(col3);
 			assertEquals(0, col3.getSize());
-			Cohort col4 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col12);
+			Cohort col4 = (Cohort) row.getColumnValue("NO." + OutpatientConsultationReportManager.col12);
 			assertNotNull(col4);
 			assertEquals(1, col4.getSize());
 			
 			// Total column
-			Cohort total1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col17);
+			Cohort total1 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col17);
 			assertNotNull(total1);
 			assertEquals(1, total1.getSize());
-			assertTrue(total1.getMemberIds().contains(2));
-			Cohort total2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col18);
+			assertTrue(total1.getMemberIds().contains(6));
+			Cohort total2 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col18);
 			assertNotNull(total2);
 			assertEquals(1, total2.getSize());
 			assertTrue(total2.getMemberIds().contains(7));
-			Cohort total3 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col17);
+			Cohort total3 = (Cohort) row.getColumnValue("NO." + OutpatientConsultationReportManager.col17);
 			assertNotNull(total3);
 			assertEquals(0, total3.getSize());
-			Cohort total4 = (Cohort) row.getColumnValue("MDR-TB PROGRAM." + OutpatientConsultationReportManager.col18);
+			Cohort total4 = (Cohort) row.getColumnValue("NO." + OutpatientConsultationReportManager.col18);
 			assertNotNull(total4);
 			assertEquals(1, total4.getSize());
 			assertTrue(total4.getMemberIds().contains(7));
 			
 			// Quick tests on the malaria program which should return empty
-			Cohort col5 = (Cohort) row.getColumnValue("MALARIA PROGRAM." + OutpatientConsultationReportManager.col17);
+			Cohort col5 = (Cohort) row
+			        .getColumnValue("DATE OF FOOD ASSISTANCE." + OutpatientConsultationReportManager.col17);
 			assertNotNull(col5);
 			assertEquals(0, col5.getSize());
-			Cohort col6 = (Cohort) row.getColumnValue("MALARIA PROGRAM." + OutpatientConsultationReportManager.col18);
+			Cohort col6 = (Cohort) row
+			        .getColumnValue("DATE OF FOOD ASSISTANCE." + OutpatientConsultationReportManager.col18);
 			assertNotNull(col6);
 			assertEquals(0, col6.getSize());
 			
 			// Referred To column
-			Cohort referredTo1 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col19);
+			Cohort referredTo1 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col19);
 			assertNotNull(referredTo1);
 			assertEquals(0, referredTo1.getSize());
-			Cohort referredTo2 = (Cohort) row.getColumnValue("HIV PROGRAM." + OutpatientConsultationReportManager.col20);
+			Cohort referredTo2 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col20);
 			assertNotNull(referredTo2);
 			assertEquals(1, referredTo2.getSize());
 			
