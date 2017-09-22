@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -22,12 +23,11 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class OutpatientRecordBookManagerTest extends BaseModuleContextSensitiveTest {
+public class OutpatientRecordBookManagerTest extends BaseReportTest {
 	
 	@Autowired
 	private InitializerService iniz;
@@ -52,11 +52,12 @@ public class OutpatientRecordBookManagerTest extends BaseModuleContextSensitiveT
 		System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
 		
 		PersonAttributeType pat = Context.getPersonService().getPersonAttributeTypeByUuid(
-		    "b3b6d540-a32e-44c7-91b3-292d97667518");
+		    "a0f5521c-dbbd-4c10-81b2-1b7ab18330df");
 		pat.setForeignKey(Context.getConceptService().getConcept(3).getConceptId());
 		Context.getPersonService().savePersonAttributeType(pat);
 		
 		iniz.loadJsonKeyValues();
+		
 	}
 	
 	@Ignore

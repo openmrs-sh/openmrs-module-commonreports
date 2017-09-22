@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Handler(supports = PersonNameAndAttributesDataDefinition.class)
 public class PersonNameAndAttributesDataEvaluator implements PersonDataEvaluator {
 	
-	private Log log = LogFactory.getLog(this.getClass());
-	
 	@Autowired
 	PersonDataService personDataService;
 	

@@ -40,6 +40,7 @@
 	<properties>
 		<openMRSVersion>2.0.0</openMRSVersion>
 		<reportingVersion>1.14.0-SNAPSHOT</reportingVersion>
+		<reportingcompatibilityVersion>2.0.4</reportingcompatibilityVersion>
 		<emrapiVersion>1.16</emrapiVersion>
 		<calculationVersion>1.1</calculationVersion>
 		<serialization.xstreamVersion>0.2.11</serialization.xstreamVersion>

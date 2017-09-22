@@ -20,8 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.VisitService;
 import org.openmrs.module.mksreports.definition.data.ObsOnAgeDataDefinition;
+import org.openmrs.module.mksreports.reports.BaseReportTest;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -33,17 +33,13 @@ import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ObsOnAgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class ObsOnAgeDataEvaluatorTest extends BaseReportTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "obsOnAgeTestDataset.xml";
-	
-	@Autowired
-	private VisitService visitService;
 	
 	@Autowired
 	private VisitDataService visitDataService;

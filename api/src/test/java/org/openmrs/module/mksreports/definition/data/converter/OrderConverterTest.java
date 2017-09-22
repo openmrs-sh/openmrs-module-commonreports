@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
 import org.openmrs.module.mksreports.data.converter.OrderConverter;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.module.mksreports.reports.BaseReportTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class OrderConverterTest extends BaseModuleContextSensitiveTest {
+public class OrderConverterTest extends BaseReportTest {
 	
 	@Autowired
 	private OrderService orderService;
@@ -37,7 +37,7 @@ public class OrderConverterTest extends BaseModuleContextSensitiveTest {
 		
 		{
 			String formattedOrders = (String) converter.convert(orders.get(0));
-			assertEquals("ASPIRIN", formattedOrders);
+			assertEquals("Aspirin", formattedOrders);
 		}
 		
 		// add a non drug order

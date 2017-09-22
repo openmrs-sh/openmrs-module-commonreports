@@ -1,6 +1,8 @@
 package org.openmrs.module.mksreports.reports;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Iterator;
@@ -11,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.ConceptService;
-import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -24,11 +25,10 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class OutpatientConsultationReportManagerTest extends BaseModuleContextSensitiveTest {
+public class OutpatientConsultationReportManagerTest extends BaseReportTest {
 	
 	@Autowired
 	private InitializerService iniz;
@@ -49,15 +49,12 @@ public class OutpatientConsultationReportManagerTest extends BaseModuleContextSe
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/mksreports/include/";
 	
-	protected static final String XML_REPORT_TEST_DATASET_1 = "ReportTestDataset.xml";
-	
 	protected static final String XML_REPORT_TEST_DATASET_2 = "outpatientConsultationTestDataset.xml";
 	
 	@Before
 	public void setUp() throws Exception {
 		String path = getClass().getClassLoader().getResource("testAppDataDir").getPath() + File.separator;
 		System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
-		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET_1);
 		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET_2);
 		iniz.loadJsonKeyValues();
 	}

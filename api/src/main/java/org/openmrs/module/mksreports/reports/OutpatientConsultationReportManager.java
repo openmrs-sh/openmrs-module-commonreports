@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
-import org.openmrs.api.PatientService;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -16,7 +15,6 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -34,9 +32,6 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 	
 	@Autowired
 	private InitializerService inizService;
-	
-	@Autowired
-	private PatientService patientService;
 	
 	@Override
 	public boolean isActive() {

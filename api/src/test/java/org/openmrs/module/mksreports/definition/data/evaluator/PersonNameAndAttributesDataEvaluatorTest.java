@@ -18,16 +18,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
-import org.openmrs.api.VisitService;
 import org.openmrs.module.mksreports.definition.data.PersonNameAndAttributesDataDefinition;
+import org.openmrs.module.mksreports.reports.BaseReportTest;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -35,27 +30,15 @@ import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefi
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class PersonNameAndAttributesDataEvaluatorTest extends BaseReportTest {
 	
 	@Autowired
 	private PersonService personService;
 	
 	@Autowired
 	private PersonDataService personDataService;
-	
-	/**
-	 * Run this before each unit test in this class. The "@Before" method in
-	 * {@link BaseContextSensitiveTest} is run right before this method.
-	 * 
-	 * @throws Exception
-	 */
-	@Before
-	public void setup() throws Exception {
-	}
 	
 	/**
 	 * @see PersonNameAndAttributesDataEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
@@ -65,7 +48,7 @@ public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextS
 	public void evaluate_shouldCalcuateObservations() throws Exception {
 		
 		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(new Cohort("6"));
+		context.setBaseCohort(new Cohort("6,2,1"));
 		
 		PersonNameAndAttributesDataDefinition nameDD = new PersonNameAndAttributesDataDefinition();
 		
@@ -77,7 +60,7 @@ public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextS
 		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
 		// attr1
 		PersonAttributeDataDefinition attr1DD = new PersonAttributeDataDefinition();
-		attr1DD.setPersonAttributeType(personService.getPersonAttributeType(8));
+		attr1DD.setPersonAttributeType(personService.getPersonAttributeType(1));
 		Mapped<PersonAttributeDataDefinition> mappedAttr1DD = new Mapped<PersonAttributeDataDefinition>();
 		mappedAttr1DD.setParameterizable(attr1DD);
 		
@@ -98,7 +81,7 @@ public class PersonNameAndAttributesDataEvaluatorTest extends BaseModuleContextS
 		
 		EvaluatedPersonData evaluatedPNAADD = personDataService.evaluate(Mapped.mapStraightThrough(nameDD), context);
 		
-		assertEquals("Johnny Test Doe (SINGLE, NULL)", evaluatedPNAADD.getData().get(6));
+		assertEquals("Johnny Test Doe (100 Meter, Jamaica)", evaluatedPNAADD.getData().get(6));
 	}
 	
 }
