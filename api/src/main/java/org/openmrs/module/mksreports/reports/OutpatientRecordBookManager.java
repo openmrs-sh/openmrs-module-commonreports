@@ -282,12 +282,12 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		ObsBooleanConverter trueConverter = new ObsBooleanConverter("", isOfCategoryLabel);
 		ObsBooleanConverter falseConverter = new ObsBooleanConverter(isOfCategoryLabel, "");
 		
-		ObsForVisitDataDefinition oldCaseDD = new ObsForVisitDataDefinition();
-		oldCaseDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.oldCase.concept"));
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.newCase.label"), oldCaseDD, null,
-		    trueConverter);
-		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.oldCase.label"), oldCaseDD, null,
+		ObsForVisitDataDefinition newCaseDD = new ObsForVisitDataDefinition();
+		newCaseDD.setQuestion(inizService.getConceptFromKey("report.opdrecbook.newCase.concept"));
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.newCase.label"), newCaseDD, null,
 		    falseConverter);
+		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.oldCase.label"), newCaseDD, null,
+		    trueConverter);
 		
 		// Symptoms (Chief complaint observation)
 		ObsForVisitDataDefinition symptomsDD = new ObsForVisitDataDefinition();
