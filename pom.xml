@@ -57,6 +57,11 @@
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
 		</repository>
 		<repository>
+			<id>mks-nexus</id>
+			<name>MKS NExus Repository</name>
+			<url>https://nexus.mekomsolutions.net/repository/maven-public/</url>
+		</repository>
+		<repository>
 			<id>central</id>
 			<name>Maven Repository Switchboard</name>
 			<layout>default</layout>
@@ -73,5 +78,4 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
 </project>
