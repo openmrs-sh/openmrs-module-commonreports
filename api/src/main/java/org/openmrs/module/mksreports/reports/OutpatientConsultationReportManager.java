@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.module.initializer.api.InitializerService;
 import org.openmrs.module.mksreports.MKSReportManager;
 import org.openmrs.module.mksreports.MKSReportsConstants;
@@ -66,6 +67,10 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
+	private Parameter getLocationParameter() {
+		return new Parameter("locationList", "Visit Location", Location.class, List.class, null);
+	}
+	
 	public static String col1 = "";
 	
 	public static String col2 = "";
@@ -115,6 +120,7 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
+		params.add(getLocationParameter());
 		return params;
 	}
 	
@@ -137,12 +143,14 @@ public class OutpatientConsultationReportManager extends MKSReportManager {
 		Map<String, Object> parameterMappings = new HashMap<String, Object>();
 		parameterMappings.put("onOrAfter", "${startDate}");
 		parameterMappings.put("onOrBefore", "${endDate}");
+		parameterMappings.put("locationList", "${locationList}");
 		
 		// Add a row for each member of allDiags concept
 		for (Concept member : allDiags.getSetMembers()) {
 			CodedObsCohortDefinition diag = new CodedObsCohortDefinition();
 			diag.addParameter(new Parameter("onOrAfter", "On Or After", Date.class));
 			diag.addParameter(new Parameter("onOrBefore", "On Or Before", Date.class));
+			diag.addParameter(new Parameter("locationList", "Visit Location", Location.class, List.class, null));
 			diag.setOperator(SetComparator.IN);
 			diag.setQuestion(inizService.getConceptFromKey("report.opdconsult.diagnosisQuestion.concept"));
 			

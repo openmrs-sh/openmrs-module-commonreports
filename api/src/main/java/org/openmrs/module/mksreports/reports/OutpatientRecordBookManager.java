@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
@@ -107,11 +108,16 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
 	
+	private Parameter getLocationParameter() {
+		return new Parameter("locationList", "Visit Location", Location.class, List.class, null);
+	}
+	
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
 		params.add(getStartDateParameter());
 		params.add(getEndDateParameter());
+		params.add(getLocationParameter());
 		return params;
 	}
 	
@@ -133,12 +139,14 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		
 		Parameter endedOnOrAfter = new Parameter("endedOnOrAfter", "Ended On Or After", Date.class);
 		Parameter endedBefore = new Parameter("endedOnOrBefore", "Ended On Or Before", Date.class);
-		query.setParameters(Arrays.asList(endedOnOrAfter, endedBefore));
+		Parameter locationList = new Parameter("locationList", "Visit Location", Location.class, List.class, null);
+		query.setParameters(Arrays.asList(endedOnOrAfter, endedBefore, locationList));
 		
 		{
 			Map<String, Object> parameterMappings = new HashMap<String, Object>();
 			parameterMappings.put("endedOnOrAfter", "${startDate}");
 			parameterMappings.put("endedOnOrBefore", "${endDate}");
+			parameterMappings.put("locationList", "${locationList}");
 			vdsd.addRowFilter(query, ObjectUtil.toString(parameterMappings, "=", ","));
 		}
 		
