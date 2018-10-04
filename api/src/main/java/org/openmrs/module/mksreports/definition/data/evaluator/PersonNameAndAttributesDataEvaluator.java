@@ -42,7 +42,8 @@ public class PersonNameAndAttributesDataEvaluator implements PersonDataEvaluator
 		EvaluatedPersonData evaluatedPreferredNameData = personDataService.evaluate(nameDD.getPreferredNameDefinition(),
 		    context);
 		
-		// Evaluate the list of PersonAttributeDDs and return the evaluated data as another list
+		// Evaluate the list of PersonAttributeDDs and return the evaluated data as
+		// another list
 		List<EvaluatedPersonData> evaluedPAData = new ArrayList<EvaluatedPersonData>();
 		for (Mapped<? extends PersonAttributeDataDefinition> mappedDef : nameDD.getPersonAttributeDefinitions()) {
 			EvaluatedPersonData evaluatedDef = personDataService.evaluate(mappedDef, context);
@@ -58,8 +59,8 @@ public class PersonNameAndAttributesDataEvaluator implements PersonDataEvaluator
 			String paStr = "";
 			for (EvaluatedPersonData paData : evaluedPAData) {
 				if (paData.getData().get(pid) != null) {
-					paStr = paStr.equals("") ? paData.getData().get(pid).toString() : paStr + ", "
-					        + paData.getData().get(pid).toString();
+					paStr = paStr.equals("") ? paData.getData().get(pid).toString()
+					        : paStr + ", " + paData.getData().get(pid).toString();
 				}
 			}
 			if (paStr != "") {

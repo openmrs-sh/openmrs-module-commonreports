@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
  */
 public class ObsBooleanConverter implements DataConverter {
 	
-	//***** PROPERTIES *****
+	// ***** PROPERTIES *****
 	
 	private String trueLabel;
 	
@@ -46,7 +46,7 @@ public class ObsBooleanConverter implements DataConverter {
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** CONSTRUCTORS *****
+	// ***** CONSTRUCTORS *****
 	public ObsBooleanConverter() {
 		
 	}
@@ -56,7 +56,7 @@ public class ObsBooleanConverter implements DataConverter {
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** INSTANCE METHODS *****
+	// ***** INSTANCE METHODS *****
 	
 	/**
 	 * @see DataConverter#converter(Object)

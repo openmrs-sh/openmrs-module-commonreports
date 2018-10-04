@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
  */
 public class DistanceFromHealthCenterConverter implements DataConverter {
 	
-	//***** PROPERTIES *****
+	// ***** PROPERTIES *****
 	
 	private List<Concept> matchingDistances;
 	
@@ -57,14 +57,14 @@ public class DistanceFromHealthCenterConverter implements DataConverter {
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** CONSTRUCTORS *****
+	// ***** CONSTRUCTORS *****
 	public DistanceFromHealthCenterConverter(List<Concept> matchingDistances, String trueLabel, String falseLabel) {
 		this.matchingDistances = matchingDistances;
 		this.trueLabel = trueLabel;
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** INSTANCE METHODS *****
+	// ***** INSTANCE METHODS *****
 	
 	/**
 	 * @see DataConverter#converter(Object)

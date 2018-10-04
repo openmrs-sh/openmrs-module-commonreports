@@ -85,7 +85,8 @@ public class OutpatientConsultationReportManagerTest extends BaseReportTest {
 		for (Iterator<DataSetRow> itr = data.getDataSets().get(rd.getName()).iterator(); itr.hasNext();) {
 			DataSetRow row = itr.next();
 			
-			// In CrossTabDataSet reports all rows and columns are in fact just columns of one row
+			// In CrossTabDataSet reports all rows and columns are in fact just columns of
+			// one row
 			
 			// Ensure that the report contains 4 possible combinations
 			Cohort col1 = (Cohort) row.getColumnValue("YES." + OutpatientConsultationReportManager.col7);

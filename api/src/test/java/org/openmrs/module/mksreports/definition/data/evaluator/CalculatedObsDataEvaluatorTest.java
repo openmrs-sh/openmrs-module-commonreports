@@ -197,13 +197,15 @@ public class CalculatedObsDataEvaluatorTest extends BaseReportTest {
 		
 		ObsForVisitDataDefinition obsDD1 = new ObsForVisitDataDefinition();
 		obsDD1.setQuestion(conceptService.getConcept(5089));
-		// Do not specify any TimeQualifier on the ObsForVisitDataDefinition (no setWhich())
+		// Do not specify any TimeQualifier on the ObsForVisitDataDefinition (no
+		// setWhich())
 		Mapped<ObsForVisitDataDefinition> mappedObsDD1 = new Mapped<ObsForVisitDataDefinition>();
 		mappedObsDD1.setParameterizable(obsDD1);
 		
 		ObsForVisitDataDefinition obsDD2 = new ObsForVisitDataDefinition();
 		obsDD2.setQuestion(conceptService.getConcept(5497));
-		// Do not specify any TimeQualifier on the ObsForVisitDataDefinition (no setWhich())
+		// Do not specify any TimeQualifier on the ObsForVisitDataDefinition (no
+		// setWhich())
 		Mapped<ObsForVisitDataDefinition> mappedObsDD2 = new Mapped<ObsForVisitDataDefinition>();
 		mappedObsDD2.setParameterizable(obsDD2);
 		
@@ -225,7 +227,7 @@ public class CalculatedObsDataEvaluatorTest extends BaseReportTest {
 		// Ensure that one can override the default TimeQualifier.LAST
 		obsDD2.setWhich(TimeQualifier.FIRST);
 		obsDD1.setWhich(TimeQualifier.FIRST);
-		// Encounter 3 has 2 older observations. They should be returned		
+		// Encounter 3 has 2 older observations. They should be returned
 		Encounter encounter3 = encounterService.getEncounter(3);
 		encounter3.setVisit(visit5);
 		

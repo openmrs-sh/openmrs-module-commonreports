@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
  */
 public class GenderConverter implements DataConverter {
 	
-	//***** PROPERTIES *****
+	// ***** PROPERTIES *****
 	
 	private List<String> matchingGenders;
 	
@@ -54,14 +54,14 @@ public class GenderConverter implements DataConverter {
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** CONSTRUCTORS *****
+	// ***** CONSTRUCTORS *****
 	public GenderConverter(List<String> matchingGenders, String trueLabel, String falseLabel) {
 		this.matchingGenders = matchingGenders;
 		this.trueLabel = trueLabel;
 		this.falseLabel = falseLabel;
 	}
 	
-	//***** INSTANCE METHODS *****
+	// ***** INSTANCE METHODS *****
 	
 	/**
 	 * @see DataConverter#converter(Object)

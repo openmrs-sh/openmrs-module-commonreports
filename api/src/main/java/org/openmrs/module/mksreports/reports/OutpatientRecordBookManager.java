@@ -162,25 +162,26 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		Mapped<PreferredNameDataDefinition> mappedPreferredNameDD = new Mapped<PreferredNameDataDefinition>();
 		mappedPreferredNameDD.setParameterizable(preferredNameDD);
 		
-		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
+		// Create the list of mapped PersonAttributeDataDefinition to be fed to the
+		// PersonNameAndAttributesDD
 		// Given name local
 		PersonAttributeDataDefinition givenNameLocalDD = new PersonAttributeDataDefinition();
-		givenNameLocalDD.setPersonAttributeType(inizService
-		        .getPersonAttributeTypeFromKey("report.opdrecbook.givenNameLocal.pat"));
+		givenNameLocalDD
+		        .setPersonAttributeType(inizService.getPersonAttributeTypeFromKey("report.opdrecbook.givenNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedGivenNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedGivenNameLocalDD.setParameterizable(givenNameLocalDD);
 		
 		// Middle name local
 		PersonAttributeDataDefinition middleNameLocalDD = new PersonAttributeDataDefinition();
-		middleNameLocalDD.setPersonAttributeType(inizService
-		        .getPersonAttributeTypeFromKey("report.opdrecbook.middleNameLocal.pat"));
+		middleNameLocalDD
+		        .setPersonAttributeType(inizService.getPersonAttributeTypeFromKey("report.opdrecbook.middleNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedMiddleNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedMiddleNameLocalDD.setParameterizable(middleNameLocalDD);
 		
 		// Family name local
 		PersonAttributeDataDefinition familyNameLocalDD = new PersonAttributeDataDefinition();
-		familyNameLocalDD.setPersonAttributeType(inizService
-		        .getPersonAttributeTypeFromKey("report.opdrecbook.familyNameLocal.pat"));
+		familyNameLocalDD
+		        .setPersonAttributeType(inizService.getPersonAttributeTypeFromKey("report.opdrecbook.familyNameLocal.pat"));
 		Mapped<PersonAttributeDataDefinition> mappedFamilyNameLocalDD = new Mapped<PersonAttributeDataDefinition>();
 		mappedFamilyNameLocalDD.setParameterizable(familyNameLocalDD);
 		
@@ -311,15 +312,16 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 		
 		// Treatment (Orders)
 		OrderForVisitDataDefinition orderDD = new OrderForVisitDataDefinition();
-		orderDD.setTypes(Arrays.asList(orderService.getOrderTypeByUuid(inizService
-		        .getValueFromKey("report.opdrecbook.drugOrder.orderType"))));
+		orderDD.setTypes(Arrays.asList(
+		    orderService.getOrderTypeByUuid(inizService.getValueFromKey("report.opdrecbook.drugOrder.orderType"))));
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.treatment.label"), orderDD,
 		    (String) null, new CollectionConverter(new OrderConverter(), false, null));
 		
 		NullToNAConverter nullToNAConverter = new NullToNAConverter(
 		        MessageUtil.translate("mksreports.report.outpatientRecordBook.na.label"));
 		// IMCI program started
-		// TODO: Currently the IMCI program is not implemented. Returning "N/A" in each cell 
+		// TODO: Currently the IMCI program is not implemented. Returning "N/A" in each
+		// cell
 		IMCIProgramDataDefinition imciDD = new IMCIProgramDataDefinition();
 		vdsd.addColumn(MessageUtil.translate("mksreports.report.outpatientRecordBook.imciProgram.label"), imciDD,
 		    (String) null, nullToNAConverter);
@@ -396,7 +398,7 @@ public class OutpatientRecordBookManager extends MKSReportManager {
 	
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-		return Arrays.asList(ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c",
-		    reportDefinition));
+		return Arrays
+		        .asList(ReportManagerUtil.createCsvReportDesign("9873e45d-f8a0-4682-be78-243b8c9b848c", reportDefinition));
 	}
 }

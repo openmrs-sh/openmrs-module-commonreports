@@ -57,7 +57,8 @@ public class PersonNameAndAttributesDataEvaluatorTest extends BaseReportTest {
 		Mapped<PreferredNameDataDefinition> mappedPreferredNameDD = new Mapped<PreferredNameDataDefinition>();
 		mappedPreferredNameDD.setParameterizable(preferredNameDD);
 		
-		// Create the list of mapped PersonAttributeDataDefinition to be fed to the PersonNameAndAttributesDD
+		// Create the list of mapped PersonAttributeDataDefinition to be fed to the
+		// PersonNameAndAttributesDD
 		// attr1
 		PersonAttributeDataDefinition attr1DD = new PersonAttributeDataDefinition();
 		attr1DD.setPersonAttributeType(personService.getPersonAttributeType(1));
