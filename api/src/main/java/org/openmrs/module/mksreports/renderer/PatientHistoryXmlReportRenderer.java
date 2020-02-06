@@ -36,7 +36,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.mksreports.common.MksReportPrivilegeConstants;
 import org.openmrs.module.mksreports.reports.PatientHistoryReportManager;
 import org.openmrs.module.reporting.common.Localized;
@@ -62,6 +64,22 @@ import com.thoughtworks.xstream.XStream;
 @Localized("reporting.XmlReportRenderer")
 public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 	
+	// @Autowired, immediate, static, and ctor based initialization
+	// of this reference all fail or cause the server to freeze
+	// when this module is loaded
+	
+	// using "class local singleton"/Flyweight reference
+	private MessageSourceService mss;
+	
+	private MessageSourceService getMss() {
+		
+		if (mss == null) {
+			mss = Context.getMessageSourceService();
+		}
+		
+		return mss;
+	}
+	
 	/**
 	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
@@ -73,6 +91,7 @@ public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 	/**
 	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
 	 */
+	@Override
 	public String getRenderedContentType(ReportRequest request) {
 		return "text/xml";
 	}
@@ -80,7 +99,7 @@ public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 	protected String getStringValue(Object value) {
 		String strVal = "";
 		if (value != null)
-			return strVal = value.toString();
+			return strVal = getMss().getMessage(value.toString());
 		return strVal;
 	}
 	
@@ -93,6 +112,7 @@ public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 		return getStringValue(row, column.getName());
 	}
 	
+	@Override
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		Context.requirePrivilege(MksReportPrivilegeConstants.VIEW_PATIENT_HISTORY);
@@ -151,6 +171,22 @@ public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 		Document doc = docBuilder.newDocument();
 		Element rootElement = doc.createElement("patientHistory");
 		doc.appendChild(rootElement);
+		
+		Element header = doc.createElement("header");
+		
+		header.setTextContent("Requested By " + Context.getAuthenticatedUser().getDisplayString());
+		rootElement.appendChild(header);
+		
+		AdministrationService adminService = Context.getAdministrationService();
+		String logoPath = adminService.getGlobalProperty("mksreports.brandingLogo");
+		
+		if (!StringUtils.isBlank(logoPath)) {
+			Element branding = doc.createElement("branding");
+			Element image = doc.createElement("logo");
+			image.setTextContent(logoPath);
+			branding.appendChild(image);
+			rootElement.appendChild(branding);
+		}
 		
 		String dataSetKey = "";
 		
@@ -222,40 +258,40 @@ public class PatientHistoryXmlReportRenderer extends ReportDesignRenderer {
 				Element encounter = doc.getElementById(encounterUuid);
 				if (encounter == null) {
 					// TODO: At least log this.
+				} else {
+					List<DataSetColumn> columns = dataSet.getMetaData().getColumns();
+					for (DataSetColumn column : columns) {
+						String colName = column.getName();
+						Object value = row.getColumnValue(column);
+						String strValue = getStringValue(value);
+						if (StringUtils.equals(colName, PatientHistoryReportManager.ENCOUNTER_UUID_LABEL)) {
+							continue;
+						}
+						if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_NAME_LABEL)) {
+							obs.setAttribute(ATTR_LABEL, strValue);
+							continue;
+						}
+						if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_DATATYPE_LABEL)) {
+							obs.setAttribute(ATTR_TYPE, strValue);
+							continue;
+						}
+						if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_DATETIME_LABEL)) {
+							String obsDateTime = (new SimpleDateFormat(TIME_FORMAT)).format(value);
+							obs.setAttribute(ATTR_TIME, obsDateTime);
+							continue;
+						}
+						if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_PROVIDER_LABEL)) {
+							obs.setAttribute(ATTR_PROV, strValue);
+							continue;
+						}
+						if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_VALUE_LABEL)) {
+							obs.appendChild(doc.createTextNode(strValue));
+							continue;
+						}
+					}
+					
+					encounter.appendChild(obs);
 				}
-				
-				List<DataSetColumn> columns = dataSet.getMetaData().getColumns();
-				for (DataSetColumn column : columns) {
-					String colName = column.getName();
-					Object value = row.getColumnValue(column);
-					String strValue = getStringValue(value);
-					if (StringUtils.equals(colName, PatientHistoryReportManager.ENCOUNTER_UUID_LABEL)) {
-						continue;
-					}
-					if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_NAME_LABEL)) {
-						obs.setAttribute(ATTR_LABEL, strValue);
-						continue;
-					}
-					if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_DATATYPE_LABEL)) {
-						obs.setAttribute(ATTR_TYPE, strValue);
-						continue;
-					}
-					if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_DATETIME_LABEL)) {
-						String obsDateTime = (new SimpleDateFormat(TIME_FORMAT)).format(value);
-						obs.setAttribute(ATTR_TIME, obsDateTime);
-						continue;
-					}
-					if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_PROVIDER_LABEL)) {
-						obs.setAttribute(ATTR_PROV, strValue);
-						continue;
-					}
-					if (StringUtils.equals(column.getName(), PatientHistoryReportManager.OBS_VALUE_LABEL)) {
-						obs.appendChild(doc.createTextNode(strValue));
-						continue;
-					}
-				}
-				
-				encounter.appendChild(obs);
 			}
 		}
 		
