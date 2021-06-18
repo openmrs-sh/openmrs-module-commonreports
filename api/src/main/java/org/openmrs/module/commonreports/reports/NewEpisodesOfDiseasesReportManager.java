@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,47 +28,45 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
-	
-	public static final String REPEATING_SECTION = "sheet:1,row:4,dataset:New Episodes of Diseases";
-	
+
 	@Autowired
 	private InitializerService inizService;
-	
+
 	@Override
 	public boolean isActivated() {
 		return inizService.getBooleanFromKey("report.newEpisodesOfDiseases.active", false);
 	}
-	
+
 	@Override
 	public String getVersion() {
 		return "1.0.0-SNAPSHOT";
 	}
-	
+
 	@Override
 	public String getUuid() {
 		return "8b787bdc-c852-481c-b6fa-6683ec7e30d8";
 	}
-	
+
 	@Override
 	public String getName() {
 		return MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.reportName");
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.reportDescription");
 	}
-	
+
 	private Parameter getStartDateParameter() {
 		return new Parameter("startDate", "Start Date", Date.class);
 	}
-	
+
 	private Parameter getEndDateParameter() {
 		return new Parameter("endDate", "End Date", Date.class);
 	}
-	
+
 	private String getSqlString(String resourceName) {
-		
+
 		InputStream is = null;
 		try {
 			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName);
@@ -82,7 +79,7 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 			IOUtils.closeQuietly(is);
 		}
 	}
-	
+
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> params = new ArrayList<Parameter>();
@@ -90,45 +87,45 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 		params.add(getEndDateParameter());
 		return params;
 	}
-	
+
 	@Override
 	public ReportDefinition constructReportDefinition() {
-		
+
 		ReportDefinition rd = new ReportDefinition();
-		
+
 		rd.setName(getName());
 		rd.setDescription(getDescription());
 		rd.setParameters(getParameters());
 		rd.setUuid(getUuid());
-		
+
 		SqlDataSetDefinition sqlDsd = new SqlDataSetDefinition();
-		sqlDsd.setName("New Episodes of Diseases SQL Dataset");
-		sqlDsd.setDescription("New Episodes of Diseases SQL Dataset");
-		
+		sqlDsd.setName(getName());
+		sqlDsd.setDescription("");
+
 		String rawSql = getSqlString("org/openmrs/module/commonreports/sql/newEpisodesOfDiseases.sql");
 		Concept allMaladies = inizService.getConceptFromKey("report.newEpisodesOfDiseases.diagnosisList.conceptSet");
-		
+
 		String sql = applyMetadataReplacements(rawSql, allMaladies);
-		
+
 		sqlDsd.setSqlQuery(sql);
 		sqlDsd.addParameters(getParameters());
-		
+
 		Map<String, Object> parameterMappings = new HashMap<String, Object>();
 		parameterMappings.put("startDate", "${startDate}");
 		parameterMappings.put("endDate", "${endDate}");
-		
+
 		rd.addDataSetDefinition(getName(), sqlDsd, parameterMappings);
-		
+
 		return rd;
 	}
-	
+
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = ReportManagerUtil.createExcelTemplateDesign("7688966e-fca5-4fde-abab-1b46a87a1185",
 		    reportDefinition, "org/openmrs/module/commonreports/reportTemplates/newEpisodesOfDiseasesReportTemplate.xls");
-		
+
 		Properties designProperties = new Properties();
-		designProperties.put("repeatingSections", REPEATING_SECTION);
+		designProperties.put("repeatingSections", "sheet:1,row:4,dataset:" + getName());
 		designProperties.put("title.label", MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.title.label"));
 		designProperties.put("maladies.label",
 		    MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.maladies.label"));
@@ -152,35 +149,41 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 		    MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.females.label"));
 		designProperties.put("totalReferredCases.label",
 		    MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.totalReferredCases.label"));
-		
+
 		reportDesign.setProperties(designProperties);
 		return Arrays.asList(reportDesign);
 	}
-	
+
 	private String applyMetadataReplacements(String rawSql, Concept conceptSet) {
 		Concept questionsConcept = inizService.getConceptFromKey("report.newEpisodesOfDiseases.questions.conceptSet");
-		Concept referredCodedanswer = inizService
-		        .getConceptFromKey("report.newEpisodesOfDiseases.referredCodedanswer.concept");
+		Concept referralConcept = inizService.getConceptFromKey("report.newEpisodesOfDiseases.referral.concept");
 		String s = rawSql.replace(":selectStatements", constructSelectUnionAllStatements(conceptSet))
 		        .replace(":whenStatements", constructWhenThenStatements(conceptSet))
 		        .replace(":conceptIds",
 		            questionsConcept.getSetMembers().stream().map(Concept::getId).map(Object::toString)
 		                    .collect(Collectors.joining(",")))
-		        .replace(":referredValueCodedId", referredCodedanswer.getId().toString());
+		        .replace(":referralConcept", referralConcept.getId().toString());
 		return s;
 	}
-	
+
 	private String constructWhenThenStatements(Concept con) {
 		Concept allDiagnosesSet = inizService.getConceptFromKey("report.newEpisodesOfDiseases.allDiagnoses.conceptSet");
 		List<Concept> allOtherDiagnoses = null;
-		
+
 		if (allDiagnosesSet != null) {
-			allOtherDiagnoses = new ArrayList<Concept>(allDiagnosesSet.getSetMembers());
-			
+			allOtherDiagnoses = new ArrayList<Concept>();
+			if (allDiagnosesSet.getSetMembers().get(0).getSet()) {
+				for (Concept diagnosesSet : allDiagnosesSet.getSetMembers()) {
+					allOtherDiagnoses.addAll(diagnosesSet.getSetMembers());
+				}
+			} else {
+				allOtherDiagnoses.addAll(allDiagnosesSet.getSetMembers());
+			}
+
 		}
-		
+
 		String st = "";
-		
+
 		for (Concept c : con.getSetMembers()) {
 			if (c.getSet()) {
 				for (Concept setMember : c.getSetMembers()) {
@@ -197,7 +200,7 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 				}
 			}
 		}
-		
+
 		// Adding entries for all other diagnoses
 		if (CollectionUtils.isNotEmpty(allOtherDiagnoses)) {
 			for (Concept otherDiagnosis : allOtherDiagnoses) {
@@ -205,10 +208,10 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 				        + MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.allOtherDiagnoses.label") + "'";
 			}
 		}
-		
+
 		return st;
 	}
-	
+
 	private String constructSelectUnionAllStatements(Concept con) {
 		String st = "";
 		List<Concept> set = con.getSetMembers();
@@ -224,7 +227,7 @@ public class NewEpisodesOfDiseasesReportManager extends ActivatedReportManager {
 			st = st + " UNION ALL select '"
 			        + MessageUtil.translate("commonreports.report.newEpisodesOfDiseases.allOtherDiagnoses.label") + "'";
 		}
-		
+
 		return st;
 	}
 }
