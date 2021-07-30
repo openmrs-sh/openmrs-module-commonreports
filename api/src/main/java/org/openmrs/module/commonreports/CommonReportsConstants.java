@@ -35,6 +35,7 @@ public class CommonReportsConstants {
 	
 	public static final String COMPONENT_REPORTMANAGER_LAB = MODULE_ARTIFACT_ID + ".lab";
 	
+	
 	/*
 	 * URIs URLs
 	 */
