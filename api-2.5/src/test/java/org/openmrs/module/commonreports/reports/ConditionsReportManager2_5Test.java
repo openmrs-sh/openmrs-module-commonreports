@@ -2,7 +2,6 @@ package org.openmrs.module.commonreports.reports;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.commonreports.reports.BaseModuleContextSensitiveMysqlBackedTest;
 import org.openmrs.module.commonreports.ActivatedReportManager;
 import org.openmrs.module.initializer.Domain;
 import org.openmrs.module.initializer.api.InitializerService;
@@ -24,15 +22,11 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 
-public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMysqlBackedTest {
+public class ConditionsReportManager2_5Test extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private InitializerService iniz;
@@ -44,12 +38,12 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 	private ReportDefinitionService rds;
 	
 	@Autowired
-	@Qualifier("conditionsReportManager2_2")
+	@Qualifier("conditionsReportManager2_5")
 	private ActivatedReportManager manager;
 	
 	@Before
 	public void setUp() throws Exception {
-		executeDataSet("org/openmrs/module/commonreports/include/conditionTestDataset2_2.xml");
+		executeDataSet("org/openmrs/module/commonreports/include/conditionTestDataset2_5.xml");
 		
 		String path = getClass().getClassLoader().getResource("testAppDataDir").getPath() + File.separator;
 		System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
@@ -166,21 +160,5 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 		map.put("date_created", "2014-01-12 00:00:00.0");
 		
 		return map;
-	}
-	
-	private void updateDatabase(String filename) throws Exception {
-		Liquibase liquibase = getLiquibase(filename);
-		liquibase.update("Modify column datatype to longblob on reporting_report_design_resource table");
-		liquibase.getDatabase().getConnection().commit();
-	}
-	
-	private Liquibase getLiquibase(String filename) throws Exception {
-		Database liquibaseConnection = DatabaseFactory.getInstance()
-		        .findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
-		
-		liquibaseConnection.setDatabaseChangeLogTableName("LIQUIBASECHANGELOG");
-		liquibaseConnection.setDatabaseChangeLogLockTableName("LIQUIBASECHANGELOGLOCK");
-		
-		return new Liquibase(filename, new ClassLoaderResourceAccessor(getClass().getClassLoader()), liquibaseConnection);
 	}
 }

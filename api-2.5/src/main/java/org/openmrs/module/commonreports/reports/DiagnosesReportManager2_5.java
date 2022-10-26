@@ -21,15 +21,15 @@ import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.openmrs.annotation.OpenmrsProfile;
 
-@OpenmrsProfile(modules = { "emrapi:1.5 - 1.2*" })
-public class ConditionsReportManager extends ActivatedReportManager {
+@OpenmrsProfile(openmrsPlatformVersion = "2.5.* - 2.*")
+public class DiagnosesReportManager2_5 extends ActivatedReportManager {
 	
 	@Autowired
 	private InitializerService inizService;
 	
 	@Override
 	public boolean isActivated() {
-		return inizService.getBooleanFromKey("report.conditions.active", false);
+		return inizService.getBooleanFromKey("report.diagnoses.active", false);
 	}
 	
 	@Override
@@ -39,21 +39,21 @@ public class ConditionsReportManager extends ActivatedReportManager {
 	
 	@Override
 	public String getUuid() {
-		return "e193acbb-4f12-43be-97b2-25ed70a3face";
+		return "e0cf75f3-d0e8-42e8-9c4d-6d66a52d56ca";
 	}
 	
 	@Override
 	public String getName() {
-		return MessageUtil.translate("commonreports.report.conditions.reportName");
+		return MessageUtil.translate("commonreports.report.diagnoses.reportName");
 	}
 	
 	@Override
 	public String getDescription() {
-		return MessageUtil.translate("commonreports.report.conditions.reportDescription");
+		return MessageUtil.translate("commonreports.report.diagnoses.reportDescription");
 	}
 	
 	private Parameter getStartDateParameter() {
-		return new Parameter("onsetDate", "Onset Date", Date.class, null, DateUtil.parseDate("1970-01-01", "yyyy-MM-dd"));
+		return new Parameter("startDate", "Start Date", Date.class, null, new Date(0L));
 	}
 	
 	private Parameter getEndDateParameter() {
@@ -80,16 +80,16 @@ public class ConditionsReportManager extends ActivatedReportManager {
 		rd.setUuid(getUuid());
 		
 		SqlDataSetDefinition sqlDsd = new SqlDataSetDefinition();
-		sqlDsd.setName(MessageUtil.translate("commonreports.report.conditions.datasetName"));
-		sqlDsd.setDescription(MessageUtil.translate("commonreports.report.conditions.datasetDescription"));
+		sqlDsd.setName(MessageUtil.translate("commonreports.report.diagnoses.datasetName"));
+		sqlDsd.setDescription(MessageUtil.translate("commonreports.report.diagnoses.datasetDescription"));
 		
-		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/conditions.sql");
+		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/diagnoses2_5.sql");
 		
 		sqlDsd.setSqlQuery(sql);
 		sqlDsd.addParameters(getParameters());
 		
 		Map<String, Object> parameterMappings = new HashMap<String, Object>();
-		parameterMappings.put("onsetDate", "${onsetDate}");
+		parameterMappings.put("startDate", "${startDate}");
 		parameterMappings.put("endDate", "${endDate}");
 		
 		rd.addDataSetDefinition(getName(), sqlDsd, parameterMappings);
@@ -99,7 +99,7 @@ public class ConditionsReportManager extends ActivatedReportManager {
 	
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-		ReportDesign reportDesign = ReportManagerUtil.createCsvReportDesign("ffadf928-16a7-462e-ba59-49af495d9ca0",
+		ReportDesign reportDesign = ReportManagerUtil.createCsvReportDesign("cf69cbb4-5114-4fe9-8495-35c10b878157",
 		    reportDefinition);
 		return Arrays.asList(reportDesign);
 	}

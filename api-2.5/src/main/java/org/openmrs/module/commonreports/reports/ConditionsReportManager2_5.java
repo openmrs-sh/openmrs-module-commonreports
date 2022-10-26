@@ -21,8 +21,8 @@ import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.openmrs.annotation.OpenmrsProfile;
 
-@OpenmrsProfile(modules = { "emrapi:1.5 - 1.2*" })
-public class ConditionsReportManager extends ActivatedReportManager {
+@OpenmrsProfile(openmrsPlatformVersion = "2.5.* - 2.*")
+public class ConditionsReportManager2_5 extends ActivatedReportManager {
 	
 	@Autowired
 	private InitializerService inizService;
@@ -83,7 +83,7 @@ public class ConditionsReportManager extends ActivatedReportManager {
 		sqlDsd.setName(MessageUtil.translate("commonreports.report.conditions.datasetName"));
 		sqlDsd.setDescription(MessageUtil.translate("commonreports.report.conditions.datasetDescription"));
 		
-		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/conditions.sql");
+		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/conditions2_5.sql");
 		
 		sqlDsd.setSqlQuery(sql);
 		sqlDsd.addParameters(getParameters());

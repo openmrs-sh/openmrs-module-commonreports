@@ -2,11 +2,12 @@ package org.openmrs.module.commonreports.reports;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
+import org.hibernate.cfg.Environment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,15 +25,11 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 
-public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMysqlBackedTest {
+public class DiagnosesReportManager2_5Test extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private InitializerService iniz;
@@ -44,12 +41,12 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 	private ReportDefinitionService rds;
 	
 	@Autowired
-	@Qualifier("conditionsReportManager2_2")
+	@Qualifier("diagnosesReportManager2_5")
 	private ActivatedReportManager manager;
 	
 	@Before
 	public void setUp() throws Exception {
-		executeDataSet("org/openmrs/module/commonreports/include/conditionTestDataset2_2.xml");
+		executeDataSet("org/openmrs/module/commonreports/include/diagnosesTestDataset2_5.xml");
 		
 		String path = getClass().getClassLoader().getResource("testAppDataDir").getPath() + File.separator;
 		System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
@@ -68,7 +65,7 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 		ReportManagerUtil.setupReport(manager);
 		
 		// verify
-		Assert.assertNotNull(rs.getReportDesignByUuid("ffadf928-16a7-462e-ba59-49af495d9ca0"));
+		Assert.assertNotNull(rs.getReportDesignByUuid("cf69cbb4-5114-4fe9-8495-35c10b878157"));
 		
 	}
 	
@@ -76,7 +73,7 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 	public void testReport() throws Exception {
 		
 		EvaluationContext context = new EvaluationContext();
-		context.addParameterValue("onsetDate", DateUtil.parseDate("1970-06-01", "yyyy-MM-dd"));
+		context.addParameterValue("startDate", DateUtil.parseDate("1970-06-01", "yyyy-MM-dd"));
 		context.addParameterValue("endDate", DateUtil.parseDate("2022-06-30", "yyyy-MM-dd"));
 		
 		ReportDefinition rd = manager.constructReportDefinition();
@@ -91,45 +88,38 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 				rowNumber++;
 				DataSetRow row = itr.next();
 				if (rowNumber == 1) {
-					assertEquals(row1columnValuePairs.get("condition_id"),
-					    Integer.parseInt(row.getColumnValue("condition_id").toString()));
+					assertEquals(row1columnValuePairs.get("diagnosis_id"),
+					    Integer.parseInt(row.getColumnValue("diagnosis_id").toString()));
 					assertEquals(row1columnValuePairs.get("patient_id"),
 					    Integer.parseInt(row.getColumnValue("patient_id").toString()));
-					assertEquals(row1columnValuePairs.get("verification_status"), row.getColumnValue("verification_status"));
-					assertEquals(row1columnValuePairs.get("condition_coded"),
-					    Integer.parseInt(row.getColumnValue("condition_coded").toString()));
-					assertEquals(row1columnValuePairs.get("onset_date"), row.getColumnValue("onset_date").toString());
-					assertEquals(row1columnValuePairs.get("end_date"), row.getColumnValue("end_date").toString());
-					assertEquals(row1columnValuePairs.get("condition_non_coded"), row.getColumnValue("condition_non_coded"));
+					assertEquals(row1columnValuePairs.get("dx_rank"), row.getColumnValue("dx_rank"));
+					assertEquals(row1columnValuePairs.get("encounter_id"),
+					    Integer.parseInt(row.getColumnValue("encounter_id").toString()));
+					assertEquals(row1columnValuePairs.get("certainty"), row.getColumnValue("certainty"));
 					assertEquals(row1columnValuePairs.get("date_created"), row.getColumnValue("date_created").toString());
 					assertEquals(row1columnValuePairs.get("creator"),
 					    Integer.parseInt(row.getColumnValue("creator").toString()));
 					assertEquals(row1columnValuePairs.get("uuid"), row.getColumnValue("uuid"));
-					assertEquals(row1columnValuePairs.get("end_reason"), row.getColumnValue("end_reason"));
 					
 				}
 				
 				if (rowNumber == 4) {
-					assertEquals(row4columnValuePairs.get("condition_id"),
-					    Integer.parseInt(row.getColumnValue("condition_id").toString()));
+					assertEquals(row4columnValuePairs.get("diagnosis_id"),
+					    Integer.parseInt(row.getColumnValue("diagnosis_id").toString()));
 					assertEquals(row4columnValuePairs.get("patient_id"),
 					    Integer.parseInt(row.getColumnValue("patient_id").toString()));
-					assertEquals(row4columnValuePairs.get("verification_status"), row.getColumnValue("verification_status"));
-					assertEquals(row4columnValuePairs.get("condition_coded"),
-					    Integer.parseInt(row.getColumnValue("condition_coded").toString()));
-					assertEquals(row4columnValuePairs.get("onset_date"), row.getColumnValue("onset_date").toString());
-					assertEquals(row4columnValuePairs.get("end_date"), row.getColumnValue("end_date").toString());
-					assertEquals(row4columnValuePairs.get("condition_non_coded"), row.getColumnValue("condition_non_coded"));
-					
+					assertEquals(row4columnValuePairs.get("dx_rank"), row.getColumnValue("dx_rank"));
+					assertEquals(row4columnValuePairs.get("encounter_id"),
+					    Integer.parseInt(row.getColumnValue("encounter_id").toString()));
+					assertEquals(row4columnValuePairs.get("certainty"), row.getColumnValue("certainty"));
 					assertEquals(row4columnValuePairs.get("date_created"), row.getColumnValue("date_created").toString());
 					assertEquals(row4columnValuePairs.get("creator"),
 					    Integer.parseInt(row.getColumnValue("creator").toString()));
 					assertEquals(row4columnValuePairs.get("uuid"), row.getColumnValue("uuid"));
-					assertEquals(row4columnValuePairs.get("end_reason"), row.getColumnValue("end_reason"));
 				}
 				
 			}
-			assertEquals(5, rowNumber);
+			assertEquals(4, rowNumber);
 		}
 		
 	}
@@ -137,16 +127,14 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 	private Map<String, Object> getRow1ColumnValues() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		map.put("condition_id", 1);
-		map.put("patient_id", 1);
-		map.put("verification_status", "CONFIRMED");
-		map.put("condition_coded", 409);
-		map.put("onset_date", "2015-01-12 00:00:00.0");
-		map.put("end_date", "2017-03-12 00:00:00.0");
-		map.put("condition_non_coded", "NON-CODED-CONDITION2");
-		map.put("uuid", "2cc6880e-2c46-11e4-9038-a6c5e4d22fb7");
+		map.put("diagnosis_id", 1);
+		map.put("patient_id", 2);
+		map.put("dx_rank", 1);
+		map.put("encounter_id", 6);
+		map.put("certainty", "CONFIRMED");
+		map.put("uuid", "68802cce-6880-17e4-6880-a68804d22fb7");
 		map.put("creator", 1);
-		map.put("date_created", "2015-01-12 00:00:00.0");
+		map.put("date_created", "2017-01-12 00:00:00.0");
 		
 		return map;
 	}
@@ -154,33 +142,15 @@ public class ConditionsReportManager2_2Test extends BaseModuleContextSensitiveMy
 	private Map<String, Object> getRow4ColumnValues() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		map.put("condition_id", 4);
-		map.put("patient_id", 4);
-		map.put("verification_status", "CONFIRMED");
-		map.put("condition_coded", 408);
-		map.put("onset_date", "2014-01-12 00:00:00.0");
-		map.put("end_date", "2016-03-12 00:00:00.0");
-		map.put("condition_non_coded", "NON-CODED-CONDITION");
-		map.put("uuid", "2ss6880e-2c46-11e4-5844-a6c5e4d22fb7");
+		map.put("diagnosis_id", 4);
+		map.put("patient_id", 2);
+		map.put("dx_rank", 2);
+		map.put("encounter_id", 5);
+		map.put("certainty", "PROVISIONAL");
+		map.put("uuid", "77009cce-8804-17e4-8804-a68804d22fb7");
 		map.put("creator", 1);
-		map.put("date_created", "2014-01-12 00:00:00.0");
+		map.put("date_created", "2015-01-12 00:00:00.0");
 		
 		return map;
-	}
-	
-	private void updateDatabase(String filename) throws Exception {
-		Liquibase liquibase = getLiquibase(filename);
-		liquibase.update("Modify column datatype to longblob on reporting_report_design_resource table");
-		liquibase.getDatabase().getConnection().commit();
-	}
-	
-	private Liquibase getLiquibase(String filename) throws Exception {
-		Database liquibaseConnection = DatabaseFactory.getInstance()
-		        .findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
-		
-		liquibaseConnection.setDatabaseChangeLogTableName("LIQUIBASECHANGELOG");
-		liquibaseConnection.setDatabaseChangeLogLockTableName("LIQUIBASECHANGELOGLOCK");
-		
-		return new Liquibase(filename, new ClassLoaderResourceAccessor(getClass().getClassLoader()), liquibaseConnection);
 	}
 }
