@@ -26,14 +26,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VisitReportManager extends ActivatedReportManager {
+public class VisitsReportManager extends ActivatedReportManager {
 	
 	@Autowired
 	private InitializerService inizService;
 	
 	@Override
 	public boolean isActivated() {
-		return inizService.getBooleanFromKey("report.visits.table.active", true);
+		return inizService.getBooleanFromKey("report.visits.active", true);
 	}
 	
 	@Override
@@ -48,12 +48,12 @@ public class VisitReportManager extends ActivatedReportManager {
 	
 	@Override
 	public String getName() {
-		return MessageUtil.translate("commonreports.report.visits.table.reportName");
+		return MessageUtil.translate("commonreports.report.visits.reportName");
 	}
 	
 	@Override
 	public String getDescription() {
-		return MessageUtil.translate("commonreports.report.visits.table.reportDescription");
+		return MessageUtil.translate("commonreports.report.visits.reportDescription");
 	}
 	
 	private Parameter getStartDateParameter() {
@@ -87,7 +87,7 @@ public class VisitReportManager extends ActivatedReportManager {
 		sqlDsd.setName(MessageUtil.translate("commonreports.report.visit.table.datasetName"));
 		sqlDsd.setDescription(MessageUtil.translate("commonreports.report.visit.table.datasetDescription"));
 		
-		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/visit_table.sql");
+		String sql = getStringFromResource("org/openmrs/module/commonreports/sql/visits.sql");
 		
 		sqlDsd.setSqlQuery(sql);
 		sqlDsd.addParameters(getParameters());
