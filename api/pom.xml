@@ -180,7 +180,7 @@
 		<dependency>
 			<groupId>org.bahmni.module</groupId>
 			<artifactId>appointments-api</artifactId>
-			<version>1.4.0-SNAPSHOT</version>
+			<version>${appointmentsVersion}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
