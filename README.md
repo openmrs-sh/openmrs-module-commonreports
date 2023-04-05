@@ -12,6 +12,7 @@ It bundles two groups of reports:
   * Appointments
   * Concepts
   * Conditions
+  * Diagnoses
   * Encounters
   * Observations
   * Orders
